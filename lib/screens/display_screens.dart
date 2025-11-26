@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/widgets/my_button.dart';
+import 'package:nurser_e/widgets/my_snackbar.dart';
 
 class DisplayScreens extends StatelessWidget {
   const DisplayScreens({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // Heights and widths for containers
     double topContainerHeight = 450;
-    double bottomContainerHeight = 350;
 
-    // Position of RichText inside the top container
     double richTextTop = 60;
-    double richTextLeft = 40;
+    double richTextLeft = 30;
 
-    //for text below
     double bottomTextTop = 20;
     double bottomTextLeft = 30;
 
-    // For image opacity
     double imageOpacity = 0.8;
+
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    final contentWidth = screenWidth - (bottomTextLeft + 30);
 
     return Scaffold(
       body: Column(
@@ -26,12 +27,12 @@ class DisplayScreens extends StatelessWidget {
           Container(
             color: Colors.white,
             height: topContainerHeight,
-            width: MediaQuery.of(context).size.width,
+            width: screenWidth,
             child: Stack(
               children: [
                 SizedBox(
                   height: topContainerHeight,
-                  width: MediaQuery.of(context).size.width,
+                  width: screenWidth,
                   child: Opacity(
                     opacity: imageOpacity,
                     child: Image.asset(
@@ -41,7 +42,6 @@ class DisplayScreens extends StatelessWidget {
                   ),
                 ),
 
-                // RichText for image
                 Positioned(
                   top: richTextTop,
                   left: richTextLeft,
@@ -74,20 +74,22 @@ class DisplayScreens extends StatelessWidget {
 
           Expanded(
             child: Container(
-              width: MediaQuery.of(context).size.width,
+              width: screenWidth,
               color: Colors.white,
-              height: bottomContainerHeight,
 
               child: Stack(
                 children: [
                   Positioned(
-                    top: bottomTextLeft,
+                    top: bottomTextTop,
                     left: bottomTextLeft,
-                    child: RichText(
-                      text: const TextSpan(
+                    child: SizedBox(
+                      width: contentWidth,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          TextSpan(
-                            text: 'Hello, \n',
+                          Text(
+                            'Hello,',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 24,
@@ -95,12 +97,57 @@ class DisplayScreens extends StatelessWidget {
                             ),
                           ),
 
-                          TextSpan(
-                            text: 'Welcome to nurserE',
+                          SizedBox(height: 6),
+
+                          Text(
+                            'Welcome to nurserE',
                             style: TextStyle(
                               color: Colors.black,
                               fontSize: 24,
                               fontWeight: FontWeight.w700,
+                            ),
+                          ),
+
+                          SizedBox(height: 40),
+
+                          MyButton(
+                            text: "Login",
+                            color: const Color.fromARGB(255, 205, 205, 205),
+                            onPressed: () {
+                              showMySnackBar(
+                                context: context,
+                                message: "Login Clicked!",
+                              );
+                            },
+                            textStyle: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                              color: Color.fromARGB(
+                                255,
+                                153,
+                                153,
+                                153,
+                              ), // override default color
+                              fontSize: 22, // override default size
+                            ),
+                          ),
+
+                          SizedBox(height: 30),
+
+                          MyButton(
+                            text: "SignUp",
+                            color: Colors.green,
+                            onPressed: () {
+                              showMySnackBar(
+                                context: context,
+                                message: "SignUp Clicked!",
+                              );
+                            },
+                            textStyle: const TextStyle(
+                              fontFamily: 'Poppins',
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white, // override default color
+                              fontSize: 22, // override default size
                             ),
                           ),
                         ],
