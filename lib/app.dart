@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nurser_e/screens/display_screens.dart';
-// import 'package:nurser_e/screens/splash_screens.dart';
+// import 'package:nurser_e/screens/home_screen.dart';
+// import 'package:nurser_e/screens/display_screens.dart';
+import 'package:nurser_e/screens/splash_screens.dart';
+
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -10,7 +12,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
 
-      home: DisplayScreens(),
+      home: SplashScreens(),
     );
   }
 }
