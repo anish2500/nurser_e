@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/screens/login_screens.dart';
+import 'package:nurser_e/screens/signup_screens.dart';
 import 'package:nurser_e/widgets/my_button.dart';
 import 'package:nurser_e/widgets/my_snackbar.dart';
 
@@ -118,6 +120,15 @@ class DisplayScreens extends StatelessWidget {
                                 context: context,
                                 message: "Login Clicked!",
                               );
+
+                              Future.delayed(const Duration(seconds: 1), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const LoginScreens(),
+                                  ),
+                                );
+                              });
                             },
                             textStyle: const TextStyle(
                               fontFamily: 'Poppins',
@@ -142,6 +153,15 @@ class DisplayScreens extends StatelessWidget {
                                 context: context,
                                 message: "SignUp Clicked!",
                               );
+
+                              Future.delayed(const Duration(seconds: 1), () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const SignupScreens(),
+                                  ),
+                                );
+                              });
                             },
                             textStyle: const TextStyle(
                               fontFamily: 'Poppins',

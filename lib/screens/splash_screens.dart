@@ -1,14 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/screens/onboarding_screens.dart';
 
-class SplashScreens extends StatelessWidget {
+class SplashScreens extends StatefulWidget {
   const SplashScreens({super.key});
 
   @override
+  State<SplashScreens> createState() => _SplashScreensState();
+}
+
+class _SplashScreensState extends State<SplashScreens> {
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Future.delayed(const Duration(seconds: 2), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const OnboardingScreens()),
+        );
+      });
+    });
+  }
+
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        // title: const Text('Splash Screens'),
         backgroundColor: Colors.white,
       ),
 
@@ -22,7 +40,6 @@ class SplashScreens extends StatelessWidget {
               Center(child: Image.asset('assets/images/logo.jpg')),
               SizedBox(height: 10),
 
-              //Rich text for nurserE
               RichText(
                 text: TextSpan(
                   children: [
