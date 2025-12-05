@@ -12,6 +12,7 @@ class _SplashScreensState extends State<SplashScreens> {
   @override
   void initState() {
     super.initState();
+    ///start here 
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       Future.delayed(const Duration(seconds: 2), () {
