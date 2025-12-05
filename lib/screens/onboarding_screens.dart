@@ -48,21 +48,21 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
               children: [
                
                 Container(
-                  height: 120,
+                  height: MediaQuery.of(context).size.width >= 768 ? 140 : 120,
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 768 ? 60 : 30),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       RichText(
-                        text: const TextSpan(
+                        text: TextSpan(
                           children: [
                             TextSpan(
                               text: 'nurser',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: 42,
+                                fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -70,7 +70,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                               text: 'E',
                               style: TextStyle(
                                 color: Colors.green,
-                                fontSize: 42,
+                                fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -100,7 +100,10 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
              
                 Container(
                   width: double.infinity,
-                  padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
+                    vertical: MediaQuery.of(context).size.width >= 768 ? 30 : 20
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
                     borderRadius: const BorderRadius.only(
@@ -127,7 +130,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                           ),
                         ),
                       ),
-                      const SizedBox(height: 30),
+                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 40 : 30),
                       
                     
                       Row(
@@ -136,7 +139,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                          
                           if (_currentPage > 0)
                             SizedBox(
-                              width: 100,
+                              width: MediaQuery.of(context).size.width >= 768 ? 120 : 100,
                               child: MyButton(
                                 text: 'Back',
                                 color: Colors.grey[300]!,
@@ -146,20 +149,20 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                                     curve: Curves.easeInOut,
                                   );
                                 },
-                                textStyle: const TextStyle(
+                                textStyle: TextStyle(
                                   fontFamily: 'Poppins',
                                   fontWeight: FontWeight.bold,
                                   color: Colors.black,
-                                  fontSize: 16,
+                                  fontSize: MediaQuery.of(context).size.width >= 768 ? 18 : 16,
                                 ),
                               ),
                             )
                           else
-                            const SizedBox(width: 100), 
+                            SizedBox(width: MediaQuery.of(context).size.width >= 768 ? 120 : 100), 
 
                          
                           SizedBox(
-                            width: 140,
+                            width: MediaQuery.of(context).size.width >= 768 ? 180 : 140,
                             child: MyButton(
                               text: _currentPage == _onboardingData.length - 1 ? 'Get Started' : 'Next',
                               color: Colors.green,
@@ -179,11 +182,11 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                                   );
                                 }
                               },
-                              textStyle: const TextStyle(
+                              textStyle: TextStyle(
                                 fontFamily: 'Poppins',
                                 fontWeight: FontWeight.bold,
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: MediaQuery.of(context).size.width >= 768 ? 18 : 16,
                               ),
                             ),
                           ),
@@ -211,14 +214,14 @@ class OnboardingPage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
              
               Container(
-                width: constraints.maxWidth * 0.7,
-                height: constraints.maxHeight * 0.5,
+                width: constraints.maxWidth * (MediaQuery.of(context).size.width >= 768 ? 0.6 : 0.7),
+                height: constraints.maxHeight * (MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.5),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(20),
@@ -230,34 +233,34 @@ class OnboardingPage extends StatelessWidget {
                           data.imagePath!,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) {
-                            return _buildPlaceholderIcon();
+                            return _buildPlaceholderIcon(context);
                           },
                         )
-                      : _buildPlaceholderIcon(),
+                      : _buildPlaceholderIcon(context),
                 ),
               ),
-              const SizedBox(height: 40),
+              SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 40 : 40),
               
              
               Text(
                 data.title,
-                style: const TextStyle(
-                  fontSize: 28,
+                style: TextStyle(
+                  fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
                   fontWeight: FontWeight.w700,
                   color: Colors.black,
                   fontFamily: 'Poppins',
                 ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 16),
+              SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 16),
               
              
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
+                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20),
                 child: Text(
                   data.subtitle,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: MediaQuery.of(context).size.width >= 768 ? 18 : 16,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey[600],
                     fontFamily: 'Poppins',
@@ -273,11 +276,11 @@ class OnboardingPage extends StatelessWidget {
     );
   }
 
-  Widget _buildPlaceholderIcon() {
-    return const Center(
+  Widget _buildPlaceholderIcon(BuildContext context) {
+    return Center(
       child: Icon(
         Icons.medical_services,
-        size: 80,
+        size: MediaQuery.of(context).size.width >= 768 ? 120 : 80,
         color: Colors.green,
       ),
     );

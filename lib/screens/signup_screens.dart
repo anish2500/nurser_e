@@ -27,7 +27,7 @@ class _SignupScreensState extends State<SignupScreens> {
 
   @override
   Widget build(BuildContext context) {
-    const double topFixedHeight = 400.0;
+    double topFixedHeight = MediaQuery.of(context).size.width >= 768 ? 500.0 : 400.0;
     final screenHeight = MediaQuery.of(context).size.height;
     final bottomAvailableHeight = screenHeight - topFixedHeight;
     
@@ -55,7 +55,12 @@ class _SignupScreensState extends State<SignupScreens> {
             Expanded(
               child: Container(
                 width: double.infinity,
-                padding: const EdgeInsets.fromLTRB(30, 20, 30, 20),
+                padding: EdgeInsets.fromLTRB(
+                  MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
+                  MediaQuery.of(context).size.width >= 768 ? 32 : 20, 
+                  MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
+                  MediaQuery.of(context).size.width >= 768 ? 32 : 20
+                ),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -64,51 +69,53 @@ class _SignupScreensState extends State<SignupScreens> {
                   ),
                 ),
                 child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 600),
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width >= 768 ? 800 : 600
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
+                      Text(
                         'SignUp',
                         style: TextStyle(
                           fontFamily: 'Poppins',
-                          fontSize: 28,
+                          fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
                           fontWeight: FontWeight.w700,
                           color: Colors.black,
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 14),
                       MyTextField(
                         controller: _emailController,
                         hint: 'Email Address',
                         obscure: false,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 10),
                       MyTextField(
                         controller: _passwordController,
                         hint: 'Password',
                         obscure: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 10),
                       MyTextField(
                         controller: _confirmPasswordController,
                         hint: 'Confirm Password',
                         obscure: true,
                         contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                       ),
-                      const SizedBox(height: 10),
+                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 10),
                       Center(
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            const Text(
+                            Text(
                               "Already have an account? ",
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
                                 fontWeight: FontWeight.w500,
                                 color: Colors.black,
                               ),
@@ -122,11 +129,11 @@ class _SignupScreensState extends State<SignupScreens> {
                                   ),
                                 );
                               },
-                              child: const Text(
+                              child: Text(
                                 'Login',
                                 style: TextStyle(
                                   fontFamily: 'Poppins',
-                                  fontSize: 14,
+                                  fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
                                   fontWeight: FontWeight.bold,
                                   color: Colors.green,
                                 ),
@@ -135,7 +142,7 @@ class _SignupScreensState extends State<SignupScreens> {
                           ],
                         ),
                       ),
-                      const SizedBox(height: 14),
+                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 14),
                       MyButton(
                         text: 'SignUp',
                         onPressed: () {

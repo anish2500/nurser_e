@@ -25,7 +25,7 @@ class _LoginScreensState extends State<LoginScreens> {
 
   @override
   Widget build(BuildContext context) {
-    const double topHeight = 425.0;
+    double topHeight = MediaQuery.of(context).size.width >= 768 ? 500.0 : 425.0;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -43,7 +43,12 @@ class _LoginScreensState extends State<LoginScreens> {
           Expanded(
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.fromLTRB(30, 24, 30, 24),
+              padding: EdgeInsets.fromLTRB(
+                MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
+                MediaQuery.of(context).size.width >= 768 ? 32 : 24, 
+                MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
+                MediaQuery.of(context).size.width >= 768 ? 32 : 24
+              ),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -57,37 +62,37 @@ class _LoginScreensState extends State<LoginScreens> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.max,
                   children: [
-                    const Text(
+                    Text(
                       'Login',
                       style: TextStyle(
                         fontFamily: 'Poppins',
-                        fontSize: 28,
+                        fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
                         fontWeight: FontWeight.w700,
                         color: Colors.black,
                       ),
                     ),
-                    const SizedBox(height: 20),
+                    SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 24 : 20),
                     MyTextField(
                       controller: _emailController,
                       hint: 'Email Address',
                       obscure: false,
                     ),
-                    const SizedBox(height: 16),
+                    SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 16),
                     MyTextField(
                       controller: _passwordController,
                       hint: 'Password',
                       obscure: true,
                     ),
-                    const SizedBox(height: 12),
+                    SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 12),
                     Center(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text(
+                          Text(
                             "Don't have an account? ",
                             style: TextStyle(
                               fontFamily: 'Poppins',
-                              fontSize: 14,
+                              fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
@@ -101,11 +106,11 @@ class _LoginScreensState extends State<LoginScreens> {
                                 ),
                               );
                             },
-                            child: const Text(
+                            child: Text(
                               'SignUp',
                               style: TextStyle(
                                 fontFamily: 'Poppins',
-                                fontSize: 14,
+                                fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
                                 fontWeight: FontWeight.bold,
                                 color: Colors.green,
                               ),

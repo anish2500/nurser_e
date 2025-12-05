@@ -9,13 +9,13 @@ class DisplayScreens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double topContainerHeight = 450;
+    double topContainerHeight = MediaQuery.of(context).size.width >= 768 ? 550 : 450;
 
-    double richTextTop = 60;
-    double richTextLeft = 30;
+    double richTextTop = MediaQuery.of(context).size.width >= 768 ? 80 : 60;
+    double richTextLeft = MediaQuery.of(context).size.width >= 768 ? 60 : 30;
 
-    double bottomTextTop = 20;
-    double bottomTextLeft = 30;
+    double bottomTextTop = MediaQuery.of(context).size.width >= 768 ? 40 : 20;
+    double bottomTextLeft = MediaQuery.of(context).size.width >= 768 ? 60 : 30;
 
     double imageOpacity = 0.8;
 
@@ -54,7 +54,7 @@ class DisplayScreens extends StatelessWidget {
                           text: 'nurser',
                           style: TextStyle(
                             color: Colors.grey,
-                            fontSize: 42,
+                            fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -62,7 +62,7 @@ class DisplayScreens extends StatelessWidget {
                           text: 'E',
                           style: TextStyle(
                             color: Colors.green,
-                            fontSize: 42,
+                            fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
                             fontWeight: FontWeight.w700,
                           ),
                         ),
@@ -94,7 +94,7 @@ class DisplayScreens extends StatelessWidget {
                             'Hello,',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 24,
+                              fontSize: MediaQuery.of(context).size.width >= 768 ? 32 : 24,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
@@ -105,12 +105,12 @@ class DisplayScreens extends StatelessWidget {
                             'Welcome to nurserE',
                             style: TextStyle(
                               color: Colors.black,
-                              fontSize: 24,
+                              fontSize: MediaQuery.of(context).size.width >= 768 ? 32 : 24,
                               fontWeight: FontWeight.w700,
                             ),
                           ),
 
-                          SizedBox(height: 40),
+                          SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 60 : 40),
 
                           MyButton(
                             text: "Login",
@@ -130,7 +130,7 @@ class DisplayScreens extends StatelessWidget {
                                 );
                               });
                             },
-                            textStyle: const TextStyle(
+                            textStyle: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
                               color: Color.fromARGB(
@@ -139,11 +139,11 @@ class DisplayScreens extends StatelessWidget {
                                 153,
                                 153,
                               ), // override default color
-                              fontSize: 22, // override default size
+                              fontSize: MediaQuery.of(context).size.width >= 768 ? 26 : 22, // override default size
                             ),
                           ),
 
-                          SizedBox(height: 30),
+                          SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 40 : 30),
 
                           MyButton(
                             text: "SignUp",
@@ -163,11 +163,11 @@ class DisplayScreens extends StatelessWidget {
                                 );
                               });
                             },
-                            textStyle: const TextStyle(
+                            textStyle: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
                               color: Colors.white, // override default color
-                              fontSize: 22, // override default size
+                              fontSize: MediaQuery.of(context).size.width >= 768 ? 26 : 22, // override default size
                             ),
                           ),
                         ],

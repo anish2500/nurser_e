@@ -33,13 +33,22 @@ class _SplashScreensState extends State<SplashScreens> {
 
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(MediaQuery.of(context).size.width >= 768 ? 24 : 16),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Center(child: Image.asset('assets/images/logo.jpg')),
-              SizedBox(height: 10),
+              Center(
+                child: Container(
+                  width: MediaQuery.of(context).size.width >= 768 ? 200 : 120,
+                  height: MediaQuery.of(context).size.width >= 768 ? 200 : 120,
+                  child: Image.asset(
+                    'assets/images/logo.jpg',
+                    fit: BoxFit.contain,
+                  ),
+                ),
+              ),
+              SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 10),
 
               RichText(
                 text: TextSpan(
@@ -49,7 +58,7 @@ class _SplashScreensState extends State<SplashScreens> {
                       style: TextStyle(
                         color: Colors.grey,
                         fontWeight: FontWeight.w700,
-                        fontSize: 42,
+                        fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
                       ),
                     ),
 
@@ -58,7 +67,7 @@ class _SplashScreensState extends State<SplashScreens> {
                       style: TextStyle(
                         color: Colors.green,
                         fontWeight: FontWeight.w700,
-                        fontSize: 42,
+                        fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
                       ),
                     ),
                   ],
