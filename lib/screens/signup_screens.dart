@@ -1,6 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nurser_e/screens/login_screens.dart';
-import 'package:nurser_e/screens/home_screen.dart';
+import 'package:nurser_e/screens/bottom_screens/home_screen.dart';
 import 'package:nurser_e/widgets/my_button.dart';
 import 'package:nurser_e/widgets/my_textfield.dart';
 import 'package:nurser_e/widgets/my_snackbar.dart';
@@ -13,9 +14,10 @@ class SignupScreens extends StatefulWidget {
 }
 
 class _SignupScreensState extends State<SignupScreens> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmPasswordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -27,40 +29,26 @@ class _SignupScreensState extends State<SignupScreens> {
 
   @override
   Widget build(BuildContext context) {
-    double topFixedHeight = MediaQuery.of(context).size.width >= 768 ? 500.0 : 400.0;
-    final screenHeight = MediaQuery.of(context).size.height;
-    final bottomAvailableHeight = screenHeight - topFixedHeight;
-    
-    final availableContentHeight = bottomAvailableHeight - 40;
-
     return Scaffold(
       backgroundColor: Colors.white,
-      resizeToAvoidBottomInset: false,
-      body: SafeArea(
-        child: Column(
-          children: [
-            Container(
-              height: topFixedHeight,
+      body: Column(
+        children: [
+          Expanded(
+            flex: 4,
+            child: SizedBox(
               width: double.infinity,
-              child: ClipRRect(
-                child: Image.asset(
-                  'assets/images/signup.jpg',
-                  fit: BoxFit.cover,
-                  width: double.infinity,
-                  height: double.infinity,
-                ),
+              child: Image.asset(
+                'assets/images/signup.jpg',
+                fit: BoxFit.cover,
               ),
             ),
-
-            Expanded(
+          ),
+          Expanded(
+            flex: 5,
+            child: SingleChildScrollView(
               child: Container(
                 width: double.infinity,
-                padding: EdgeInsets.fromLTRB(
-                  MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
-                  MediaQuery.of(context).size.width >= 768 ? 32 : 20, 
-                  MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
-                  MediaQuery.of(context).size.width >= 768 ? 32 : 20
-                ),
+                padding: const EdgeInsets.fromLTRB(30, 24, 30, 24),
                 decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -68,113 +56,121 @@ class _SignupScreensState extends State<SignupScreens> {
                     topRight: Radius.circular(30),
                   ),
                 ),
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width >= 768 ? 800 : 600
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'SignUp',
-                        style: TextStyle(
-                          fontFamily: 'Poppins',
-                          fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.black,
-                        ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'SignUp',
+                      style: TextStyle(
+                        fontFamily: 'Poppins Regular',
+                        fontSize: 28,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.black,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 14),
-                      MyTextField(
-                        controller: _emailController,
-                        hint: 'Email Address',
-                        obscure: false,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    ),
+                    const SizedBox(height: 20),
+                    MyTextField(
+                      controller: _emailController,
+                      hint: 'Email Address',
+                      obscure: false,
+                      hintStyle: const TextStyle(
+                        fontFamily: 'Poppins Regular',
+                        color: Colors.black54,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 10),
-                      MyTextField(
-                        controller: _passwordController,
-                        hint: 'Password',
-                        obscure: true,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    MyTextField(
+                      controller: _passwordController,
+                      hint: 'Password',
+                      obscure: true,
+                      hintStyle: const TextStyle(
+                        fontFamily: 'Poppins Regular',
+                        color: Colors.black54,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 10),
-                      MyTextField(
-                        controller: _confirmPasswordController,
-                        hint: 'Confirm Password',
-                        obscure: true,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    MyTextField(
+                      controller: _confirmPasswordController,
+                      hint: 'Confirm Password',
+                      obscure: true,
+                      hintStyle: const TextStyle(
+                        fontFamily: 'Poppins Regular',
+                        color: Colors.black54,
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 10),
-                      Center(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
+                    ),
+                    const SizedBox(height: 20),
+                    Center(
+                      child: RichText(
+                        text: TextSpan(
+                          style: const TextStyle(
+                            fontFamily: 'Poppins Regular',
+                            fontSize: 14,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.black,
+                          ),
                           children: [
-                            Text(
-                              "Already have an account? ",
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.black,
+                            const TextSpan(
+                                text: "Already have an account? "),
+                            TextSpan(
+                              text: 'Login',
+                              style: const TextStyle(
+                                fontWeight: FontWeight.w700,
+                                color: Colors.green,
                               ),
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const LoginScreens(),
-                                  ),
-                                );
-                              },
-                              child: Text(
-                                'Login',
-                                style: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green,
-                                ),
-                              ),
+                              recognizer: TapGestureRecognizer()
+                                ..onTap = () {
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (_) => const LoginScreens(),
+                                    ),
+                                  );
+                                },
                             ),
                           ],
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 14),
-                      MyButton(
-                        text: 'SignUp',
-                        onPressed: () {
-                          if (_passwordController.text != _confirmPasswordController.text) {
-                            showMySnackBar(
-                              context: context,
-                              message: 'Passwords do not match!',
-                              color: Colors.red,
-                            );
-                            return;
-                          }
+                    ),
+                    const SizedBox(height: 30),
+                    MyButton(
+                      elevation: 4,
+                      text: 'SignUp',
+                      textStyle: TextStyle(
+                        fontFamily: 'Poppins Regular', 
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16
+                      ),
+                      onPressed: () {
+                        if (_passwordController.text !=
+                            _confirmPasswordController.text) {
                           showMySnackBar(
                             context: context,
-                            message: 'SignUp successful!',
+                            message: 'Passwords do not match!',
+                            color: Colors.red,
                           );
-                          Future.delayed(const Duration(seconds: 1), () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const HomeScreen(),
-                              ),
-                            );
-                          });
-                        },
-                      ),
-                    ],
-                  ),
+                          return;
+                        }
+                        showMySnackBar(
+                          context: context,
+                          message: 'SignUp successful!',
+                        );
+                        Future.delayed(const Duration(seconds: 1), () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const HomeScreen(),
+                            ),
+                          );
+                        });
+                      },
+                    ),
+                  ],
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
