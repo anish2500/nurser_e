@@ -1,9 +1,10 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:nurser_e/screens/bottom_navigation_layout.dart';
 import 'package:nurser_e/widgets/my_button.dart';
 import 'package:nurser_e/widgets/my_textfield.dart';
-import 'package:nurser_e/widgets/my_snackbar.dart';
 import 'package:nurser_e/screens/signup_screens.dart';
-import 'package:nurser_e/screens/home_screen.dart';
+import 'package:nurser_e/screens/bottom_screens/home_screen.dart';
 
 class LoginScreens extends StatefulWidget {
   const LoginScreens({super.key});
@@ -13,8 +14,8 @@ class LoginScreens extends StatefulWidget {
 }
 
 class _LoginScreensState extends State<LoginScreens> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
 
   @override
   void dispose() {
@@ -25,115 +26,122 @@ class _LoginScreensState extends State<LoginScreens> {
 
   @override
   Widget build(BuildContext context) {
-    double topHeight = MediaQuery.of(context).size.width >= 768 ? 500.0 : 425.0;
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          SizedBox(
-            height: topHeight,
-            width: double.infinity,
-            child: Image.asset(
-              'assets/images/background.jpg',
-              fit: BoxFit.cover,
+          Expanded(
+            flex: 6,
+            child: SizedBox(
+              width: double.infinity,
+              // height: 450,
+              child: Image.asset(
+                'assets/images/background.jpg',
+                fit: BoxFit.cover,
+              ),
             ),
           ),
-
           Expanded(
-            child: Container(
-              width: double.infinity,
-              padding: EdgeInsets.fromLTRB(
-                MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
-                MediaQuery.of(context).size.width >= 768 ? 32 : 24, 
-                MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
-                MediaQuery.of(context).size.width >= 768 ? 32 : 24
-              ),
-              decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(30),
-                  topRight: Radius.circular(30),
+            flex: 6,
+            child: SingleChildScrollView(
+              child: Container(
+                width: double.infinity,
+                padding: const EdgeInsets.fromLTRB(30, 24, 30, 24),
+                decoration: const BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(30),
+                    topRight: Radius.circular(30),
+                  ),
                 ),
-              ),
-              child: SafeArea(
-                top: false,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text(
-                      'Login',
-                      style: TextStyle(
-                        fontFamily: 'Poppins',
-                        fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
-                        fontWeight: FontWeight.w700,
-                        color: Colors.black,
+                child: SafeArea(
+                  top: false,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        'Login',
+                        style: TextStyle(
+                          fontFamily: 'Poppins Regular',
+                          fontSize: 28,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.black,
+                        ),
                       ),
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 24 : 20),
-                    MyTextField(
-                      controller: _emailController,
-                      hint: 'Email Address',
-                      obscure: false,
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 20 : 16),
-                    MyTextField(
-                      controller: _passwordController,
-                      hint: 'Password',
-                      obscure: true,
-                    ),
-                    SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 12),
-                    Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            "Don't have an account? ",
-                            style: TextStyle(
-                              fontFamily: 'Poppins',
-                              fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
+                      const SizedBox(height: 20),
+                      MyTextField(
+                        controller: _emailController,
+                        hint: 'Email Address',
+                        
+                        hintStyle: TextStyle(
+                          fontFamily: 'Poppins Regular',
+                          color: Colors.grey  
+                        ),
+                        obscure: false,
+                      ),
+                      const SizedBox(height: 16),
+                      MyTextField(
+                        controller: _passwordController,
+                        hint: 'Password',
+                        hintStyle: TextStyle(
+                          fontFamily: 'Poppins Regular', 
+                          color: Colors.grey
+                        ),
+                        obscure: true,
+                      ),
+                      const SizedBox(height: 20),
+                      Center(
+                        child: RichText(
+                          text: TextSpan(
+                            style: const TextStyle(
+                              fontFamily: 'Poppins Regular',
+                              fontSize: 14,
                               fontWeight: FontWeight.w500,
                               color: Colors.black,
                             ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => SignupScreens(),
+                            children: [
+                              const TextSpan(text: "Don't have an account? "),
+                              TextSpan(
+                                text: 'SignUp',
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.green,
                                 ),
-                              );
-                            },
-                            child: Text(
-                              'SignUp',
-                              style: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontSize: MediaQuery.of(context).size.width >= 768 ? 16 : 14,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.green,
+                                recognizer: TapGestureRecognizer()
+                                  ..onTap = () {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (_) => const SignupScreens(),
+                                      ),
+                                    );
+                                  },
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-
-                    const Spacer(),
-
-                    MyButton(
-                      text: 'Login',
-                      onPressed: () {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const HomeScreen(),
-                          ),
-                        );
-                      },
-                    ),
-                  ],
+                      const SizedBox(height: 30),
+                      MyButton(
+                        text: 'Login',
+                        elevation: 4,
+                        
+                        textStyle: TextStyle(
+                          fontFamily: 'Poppins Regular', 
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold
+                        ),
+                        onPressed: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const BottomNavigationLayout(),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

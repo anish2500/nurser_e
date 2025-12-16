@@ -5,34 +5,80 @@ class MyButton extends StatelessWidget {
     super.key,
     required this.onPressed,
     required this.text,
-    this.color,
+
+    // layout
+    this.width,
+    this.height,
+    this.padding,
+
+    // button style
+    this.backgroundColor,
+    this.elevation,
+    this.shape,
+
+    // text style
+    this.textColor,
+    this.fontSize,
+    this.fontWeight,
     this.textStyle,
   });
 
   final VoidCallback onPressed;
   final String text;
-  final Color? color;
+
+  // layout
+  final double? width;
+  final double? height;
+  final EdgeInsetsGeometry? padding;
+
+  // button style
+  final Color? backgroundColor;
+  final double? elevation;
+  final OutlinedBorder? shape;
+
+  // text style
+  final Color? textColor;
+  final double? fontSize; // ✅ fixed type
+  final FontWeight? fontWeight;
   final TextStyle? textStyle;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SizedBox(
-      width: double.infinity,
+      width: width ?? double.infinity,
+      height: height ?? 48,
       child: ElevatedButton(
-        style: ElevatedButton.styleFrom(
-          backgroundColor: color ?? Colors.green,
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        ),
+        style: theme.elevatedButtonTheme.style?.copyWith(
+              backgroundColor:
+                  WidgetStateProperty.all(backgroundColor),
+              elevation: WidgetStateProperty.all(elevation),
+              padding: WidgetStateProperty.all(
+                padding ??
+                    const EdgeInsets.symmetric(
+                      horizontal: 20,
+                      vertical: 10,
+                    ),
+              ),
+              shape: shape != null
+                  ? WidgetStateProperty.all(shape)
+                  : null,
+            ) ??
+            ElevatedButton.styleFrom(
+              backgroundColor: backgroundColor,
+              elevation: elevation,
+              padding: padding,
+              shape: shape,
+            ),
         onPressed: onPressed,
         child: Text(
           text,
-          style:
-              textStyle ??
-              const TextStyle(
-                fontFamily: 'Poppins',
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                fontSize: 20,
+          style: textStyle ??
+              theme.textTheme.labelLarge?.copyWith(
+                color: textColor,
+                fontSize: fontSize,
+                fontWeight: fontWeight,
               ),
         ),
       ),

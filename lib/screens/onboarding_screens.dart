@@ -16,17 +16,20 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
   final List<OnboardingData> _onboardingData = [
     OnboardingData(
       title: 'Easy Register',
-      subtitle: 'Sign up effortlessly and start your journey with NurserE in just a few simple steps',
+      subtitle:
+          'Sign up effortlessly and start your journey with NurserE in just a few simple steps',
       imagePath: 'assets/images/plant1.jpg',
     ),
     OnboardingData(
       title: 'Professional Care',
-      subtitle: 'Connect with qualified nurses and healthcare professionals for quality care',
+      subtitle:
+          'Connect with qualified nurses and healthcare professionals for quality care',
       imagePath: 'assets/images/plant2.jpg',
     ),
     OnboardingData(
       title: 'Let\'s Get Started',
-      subtitle: 'Experience seamless healthcare management right at your fingertips',
+      subtitle:
+          'Experience seamless healthcare management right at your fingertips',
       imagePath: 'assets/images/plant3.jpg',
     ),
   ];
@@ -46,11 +49,14 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
           builder: (context, constraints) {
             return Column(
               children: [
-               
                 Container(
                   height: MediaQuery.of(context).size.width >= 768 ? 140 : 120,
                   width: double.infinity,
-                  padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 768 ? 60 : 30),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: MediaQuery.of(context).size.width >= 768
+                        ? 60
+                        : 30,
+                  ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -62,7 +68,10 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                               text: 'nurser',
                               style: TextStyle(
                                 color: Colors.grey,
-                                fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
+                                fontSize:
+                                    MediaQuery.of(context).size.width >= 768
+                                    ? 64
+                                    : 42,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -70,7 +79,10 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                               text: 'E',
                               style: TextStyle(
                                 color: Colors.green,
-                                fontSize: MediaQuery.of(context).size.width >= 768 ? 64 : 42,
+                                fontSize:
+                                    MediaQuery.of(context).size.width >= 768
+                                    ? 64
+                                    : 42,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -81,7 +93,6 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                   ),
                 ),
 
-               
                 Expanded(
                   child: PageView.builder(
                     controller: _pageController,
@@ -97,12 +108,15 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                   ),
                 ),
 
-             
                 Container(
                   width: double.infinity,
                   padding: EdgeInsets.symmetric(
-                    horizontal: MediaQuery.of(context).size.width >= 768 ? 60 : 30, 
-                    vertical: MediaQuery.of(context).size.width >= 768 ? 30 : 20
+                    horizontal: MediaQuery.of(context).size.width >= 768
+                        ? 60
+                        : 30,
+                    vertical: MediaQuery.of(context).size.width >= 768
+                        ? 30
+                        : 20,
                   ),
                   decoration: BoxDecoration(
                     color: Colors.grey[50],
@@ -114,7 +128,6 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                  
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: List.generate(
@@ -124,55 +137,75 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                             width: _currentPage == index ? 24 : 8,
                             height: 8,
                             decoration: BoxDecoration(
-                              color: _currentPage == index ? Colors.green : Colors.grey[300],
+                              color: _currentPage == index
+                                  ? Colors.green
+                                  : Colors.grey[300],
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
                         ),
                       ),
-                      SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 40 : 30),
-                      
-                    
+                      SizedBox(
+                        height: MediaQuery.of(context).size.width >= 768
+                            ? 40
+                            : 30,
+                      ),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                         
                           if (_currentPage > 0)
                             SizedBox(
-                              width: MediaQuery.of(context).size.width >= 768 ? 120 : 100,
+                              width: MediaQuery.of(context).size.width >= 768
+                                  ? 120
+                                  : 100,
                               child: MyButton(
                                 text: 'Back',
-                                color: Colors.grey[300]!,
+                                backgroundColor: Colors.grey[300],
+                                height: MediaQuery.of(context).size.width >= 768
+                                    ? 48
+                                    : 44,
                                 onPressed: () {
                                   _pageController.previousPage(
                                     duration: const Duration(milliseconds: 300),
                                     curve: Curves.easeInOut,
                                   );
                                 },
-                                textStyle: TextStyle(
-                                  fontFamily: 'Poppins',
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black,
-                                  fontSize: MediaQuery.of(context).size.width >= 768 ? 18 : 16,
-                                ),
+                                textColor: Colors.black,
+                                fontSize:
+                                    MediaQuery.of(context).size.width >= 768
+                                    ? 18
+                                    : 16,
+                                fontWeight: FontWeight.bold,
                               ),
                             )
                           else
-                            SizedBox(width: MediaQuery.of(context).size.width >= 768 ? 120 : 100), 
+                            SizedBox(
+                              width: MediaQuery.of(context).size.width >= 768
+                                  ? 120
+                                  : 100,
+                            ),
 
-                         
                           SizedBox(
-                            width: MediaQuery.of(context).size.width >= 768 ? 180 : 140,
+                            width: MediaQuery.of(context).size.width >= 768
+                                ? 180
+                                : 140,
                             child: MyButton(
-                              text: _currentPage == _onboardingData.length - 1 ? 'Get Started' : 'Next',
-                              color: Colors.green,
+                              text: _currentPage == _onboardingData.length - 1
+                                  ? 'Get Started'
+                                  : 'Next',
+                              backgroundColor: Colors.green,
+                              height: MediaQuery.of(context).size.width >= 768
+                                  ? 48
+                                  : 44,
                               onPressed: () {
-                                if (_currentPage == _onboardingData.length - 1) {
-                                  
+                                if (_currentPage ==
+                                    _onboardingData.length - 1) {
                                   Navigator.pushReplacement(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const DisplayScreens(),
+                                      builder: (context) =>
+                                          const DisplayScreens(),
                                     ),
                                   );
                                 } else {
@@ -182,12 +215,11 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                                   );
                                 }
                               },
-                              textStyle: TextStyle(
-                                fontFamily: 'Poppins',
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                                fontSize: MediaQuery.of(context).size.width >= 768 ? 18 : 16,
-                              ),
+                              textColor: Colors.white,
+                              fontSize: MediaQuery.of(context).size.width >= 768
+                                  ? 18
+                                  : 16,
+                              fontWeight: FontWeight.bold,
                             ),
                           ),
                         ],
@@ -214,14 +246,19 @@ class OnboardingPage extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20),
+          padding: EdgeInsets.symmetric(
+            horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20,
+          ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-             
               Container(
-                width: constraints.maxWidth * (MediaQuery.of(context).size.width >= 768 ? 0.6 : 0.7),
-                height: constraints.maxHeight * (MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.5),
+                width:
+                    constraints.maxWidth *
+                    (MediaQuery.of(context).size.width >= 768 ? 0.6 : 0.7),
+                height:
+                    constraints.maxHeight *
+                    (MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.5),
                 decoration: BoxDecoration(
                   color: Colors.grey[100],
                   borderRadius: BorderRadius.circular(20),
@@ -239,9 +276,10 @@ class OnboardingPage extends StatelessWidget {
                       : _buildPlaceholderIcon(context),
                 ),
               ),
-              SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 40 : 40),
-              
-             
+              SizedBox(
+                height: MediaQuery.of(context).size.width >= 768 ? 40 : 40,
+              ),
+
               Text(
                 data.title,
                 style: TextStyle(
@@ -252,15 +290,22 @@ class OnboardingPage extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
-              SizedBox(height: MediaQuery.of(context).size.width >= 768 ? 16 : 16),
-              
-             
+              SizedBox(
+                height: MediaQuery.of(context).size.width >= 768 ? 16 : 16,
+              ),
+
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20),
+                padding: EdgeInsets.symmetric(
+                  horizontal: MediaQuery.of(context).size.width >= 768
+                      ? 40
+                      : 20,
+                ),
                 child: Text(
                   data.subtitle,
                   style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width >= 768 ? 18 : 16,
+                    fontSize: MediaQuery.of(context).size.width >= 768
+                        ? 18
+                        : 16,
                     fontWeight: FontWeight.w400,
                     color: Colors.grey[600],
                     fontFamily: 'Poppins',
@@ -292,9 +337,5 @@ class OnboardingData {
   final String subtitle;
   final String? imagePath;
 
-  OnboardingData({
-    required this.title,
-    required this.subtitle,
-    this.imagePath,
-  });
+  OnboardingData({required this.title, required this.subtitle, this.imagePath});
 }
