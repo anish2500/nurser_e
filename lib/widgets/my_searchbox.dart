@@ -1,10 +1,8 @@
-
 import 'package:flutter/material.dart';
+import 'package:nurser_e/widgets/my_textfield.dart';
 
 class my_searchbox extends StatelessWidget {
-  const my_searchbox({
-    super.key,
-  });
+  const my_searchbox({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,11 +15,12 @@ class my_searchbox extends StatelessWidget {
           color: Colors.grey.shade200,
           borderRadius: BorderRadius.circular(30),
         ),
+
         child: Row(
           children: [
             Icon(Icons.search, color: Colors.grey.shade600),
             const SizedBox(width: 6),
-    
+
             Text(
               'Search...',
               style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
