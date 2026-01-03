@@ -63,6 +63,7 @@ class LoginScreens extends ConsumerWidget {
     }
     
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F2ED),
       body: Column(
         children: [
