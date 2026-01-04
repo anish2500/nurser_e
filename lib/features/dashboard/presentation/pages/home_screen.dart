@@ -65,23 +65,13 @@ class _HomeScreenState extends State<HomeScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 15),
               child: Row(
                 children: [
-                  Row(
-                    children: [
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        onPressed: () {},
-                        icon: const Icon(Icons.dashboard, color: Colors.green),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(width: 6),
                   Text(
                     "Dashboard",
                     style: TextStyle(
                       fontFamily: 'Poppins Bold',
                       fontWeight: FontWeight.w700,
                       fontSize: 24,
-                      color: Colors.green.shade400,
+                      color: Colors.green[400],
                     ),
                   ),
                 ],
@@ -96,25 +86,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const SizedBox(height: 6),
 
-                  // my_searchbox(),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 30),
-                    child: MyTextField(
-                      fillColor: Colors.grey.shade200,
-                      borderRadius: BorderRadius.circular(50),
-                      
-                      controller: TextEditingController(), 
-                      hint: 'Search...',
-                      hintStyle: TextStyle(
-                        fontFamily: 'Poppins Regular', 
-                        color: Colors.grey.shade600, 
-                        fontSize: 16
-                      ),),
-                  ),
-
+                  const my_searchbox(), 
                   const SizedBox(height: 12),
 
-                 
+                  // New Arrivals Card
                   Card(
                     elevation: 1,
                     color: const Color(0xFF3DC352),
