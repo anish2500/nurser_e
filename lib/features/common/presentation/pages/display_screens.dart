@@ -56,7 +56,18 @@ class DisplayScreens extends StatelessWidget {
                     ),
                   ),
 
-                  const SizedBox(height: 50,),
+                  const SizedBox(height: 16),
+
+                  const Text(
+                    'Your Green Companion',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
+                    ),
+                  ),
+
+                  const SizedBox(height: 40),
 
                   MyButton(
                     text: "Login",
