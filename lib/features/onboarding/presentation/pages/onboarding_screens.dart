@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nurser_e/features/common/presentation/pages/display_screens.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/display_screens.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 
 class OnboardingScreens extends StatefulWidget {

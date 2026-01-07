@@ -1,7 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nurser_e/features/common/presentation/pages/bottom_navigation_layout.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/bottom_navigation_layout.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/core/widgets/my_textfield.dart';
 import 'package:nurser_e/features/auth/presentation/pages/signup_screens.dart';

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Added Riverpod import
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
-import 'package:nurser_e/features/common/presentation/pages/bottom_navigation_layout.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/bottom_navigation_layout.dart';
 import 'package:nurser_e/features/onboarding/presentation/pages/onboarding_screens.dart';
 
 class SplashScreens extends ConsumerStatefulWidget {
