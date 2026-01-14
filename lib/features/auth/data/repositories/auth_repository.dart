@@ -73,13 +73,7 @@ class AuthRepository implements IAuthRepository {
       }
       return Left(LocalDatabaseFailure(message: 'Failed to register user'));
     } catch (e) {
-      String errorMessage = 'Failed to register user';
-      if (e.toString().contains('Email already exists')) {
-        errorMessage = 'Email already exists';
-      } else {
-        errorMessage = e.toString();
-      }
-      return Left(LocalDatabaseFailure(message: errorMessage));
+      return Left(LocalDatabaseFailure(message: e.toString()));
     }
   }
 }
