@@ -1,17 +1,24 @@
+import 'package:nurser_e/features/auth/data/models/auth_api_model.dart';
 import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
 
 abstract interface class IAuthLocalDataSource {
-  Future<bool> register(AuthHiveModel model);
+  Future<AuthHiveModel> register(AuthHiveModel model);
   Future<AuthHiveModel?> login(String email, String password);
   Future<AuthHiveModel?> getCurrentUser();
   Future<bool> logout();
+  
+  // Added to support Repository methods
+  Future<AuthHiveModel?> getUserById(String authId);
+  Future<AuthHiveModel?> getUserByEmail(String email);
+  Future<bool> updateUser(AuthHiveModel model);
+  Future<bool> deleteUser(String authId);
 
-  //email exists
+  // Email check
   Future<bool> isEmailExists(String email);
 }
 
 abstract interface class IAuthRemoteDataSource {
-  Future<AuthHiveModel> register(AuthHiveModel user);
-  Future<AuthHiveModel?> login(String email, String password);
-  Future<AuthHiveModel?> getUserById(String authId);
+  Future<AuthApiModel> register(AuthApiModel user);
+  Future<AuthApiModel?> login(String email, String password);
+  Future<AuthApiModel?> getUserById(String authId);
 }

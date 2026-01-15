@@ -17,14 +17,11 @@ class LoginScreens extends ConsumerWidget {
     final authState = ref.watch(authViewModelProvider);
     final TextEditingController _emailController = TextEditingController();
     final TextEditingController _passwordController = TextEditingController();
-    
+
     // Listen to auth state changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.authenticated) {
-        showMySnackBar(
-          context: context,
-          message: 'Login successful!',
-        );
+        showMySnackBar(context: context, message: 'Login successful!');
         Future.delayed(const Duration(seconds: 1), () {
           if (context.mounted) {
             Navigator.pushReplacement(
@@ -41,7 +38,7 @@ class LoginScreens extends ConsumerWidget {
         );
       }
     });
-    
+
     void _handleLogin() {
       final email = _emailController.text.trim();
       final password = _passwordController.text.trim();
@@ -56,12 +53,11 @@ class LoginScreens extends ConsumerWidget {
       }
 
       // Call view model login method
-      ref.read(authViewModelProvider.notifier).login(
-        email: email,
-        password: password,
-      );
+      ref
+          .read(authViewModelProvider.notifier)
+          .login(email: email, password: password);
     }
-    
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       backgroundColor: const Color(0xFFF5F2ED),
@@ -251,15 +247,17 @@ class LoginScreens extends ConsumerWidget {
                     const SizedBox(height: 12),
                     MyButton(
                       elevation: 4,
-                      text: authState.status == AuthStatus.loading ? 'Logging In...' : 'Login',
+                      text: authState.status == AuthStatus.loading
+                          ? 'Logging In...'
+                          : 'Login',
                       textStyle: const TextStyle(
                         fontFamily: 'Poppins Regular',
                         fontSize: 14,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
-                      onPressed: authState.status == AuthStatus.loading 
-                          ? () {} 
+                      onPressed: authState.status == AuthStatus.loading
+                          ? () {}
                           : _handleLogin,
                     ),
                     const SizedBox(height: 20),

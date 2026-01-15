@@ -44,9 +44,12 @@ dependencies:
   flutter_riverpod: ^3.1.0
   path_provider: ^2.1.5
   shared_preferences: ^2.5.4
-  dio_logger: ^4.0.8+8
-  dio: ^4.0.6
-  
+  # dio_logger: ^4.0.8+8
+  dio_smart_retry: ^6.0.0      # Updated to support Dio 5
+  pretty_dio_logger: ^1.3.1
+  flutter_secure_storage: ^10.0.0
+  connectivity_plus: ^7.0.0
+  dio: ^5.4.0
  
  
 
