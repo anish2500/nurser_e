@@ -9,29 +9,30 @@ final hiveServiceProvider = Provider<HiveService>((ref) {
 });
 
 class HiveService {
+  // Initialize Hive
   Future<void> init() async {
-    final directory = await getApplicationCacheDirectory();
+    final directory = await getApplicationDocumentsDirectory();
     final path = '${directory.path}/${HiveTableConstant.dbName}';
     Hive.init(path);
+
+    // Register Adapters
     _registerAdapter();
-    await openBoxes();
+    
+    // Open necessary boxes
+    await _openBoxes();
   }
 
+  // Adapter registration
   void _registerAdapter() {
-    // Registering Auth Adapter
     if (!Hive.isAdapterRegistered(HiveTableConstant.authTypeId)) {
       Hive.registerAdapter(AuthHiveModelAdapter());
     }
-    
-    // If you have Batch or other features later, register them here
+    // Add additional adapters here as you create more features
   }
 
-  Future<void> openBoxes() async {
+  // Open Boxes
+  Future<void> _openBoxes() async {
     await Hive.openBox<AuthHiveModel>(HiveTableConstant.authTable);
-  }
-
-  Future<void> close() async {
-    await Hive.close();
   }
 
   // Helper getter for Auth Box
@@ -41,16 +42,25 @@ class HiveService {
   // ======================== AUTH QUERIES ========================== //
 
   /// Register a new user
-  Future<void> registerUser(AuthHiveModel model) async {
-    await _authBox.put(model.authId, model);
+  Future<void> register(AuthHiveModel user) async {
+    await _authBox.put(user.authId, user);
   }
 
-  /// Login user by checking credentials
-  Future<AuthHiveModel?> loginUser(String email, String password) async {
-    final users = _authBox.values.where(
-      (user) => user.email == email && user.password == password,
-    );
-    return users.isNotEmpty ? users.first : null;
+  /// Login - find user by email and password
+  /// Returns AuthHiveModel if found, null otherwise
+  Future<AuthHiveModel?> login(String email, String password) async {
+    try {
+      return _authBox.values.firstWhere(
+        (user) => user.email == email && user.password == password,
+      );
+    } catch (e) {
+      return null;
+    }
+  }
+
+  /// Check if an email is already registered (Validation)
+  Future<bool> isEmailRegistered(String email) async {
+    return _authBox.values.any((user) => user.email == email);
   }
 
   /// Get user by their Unique ID (authId)
@@ -60,13 +70,20 @@ class HiveService {
 
   /// Get user by email address
   Future<AuthHiveModel?> getUserByEmail(String email) async {
-    final users = _authBox.values.where((user) => user.email == email);
-    return users.isNotEmpty ? users.first : null;
+    try {
+      return _authBox.values.firstWhere((user) => user.email == email);
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Update existing user information
-  Future<void> updateUser(AuthHiveModel model) async {
-    await _authBox.put(model.authId, model);
+  Future<bool> updateUser(AuthHiveModel user) async {
+    if (_authBox.containsKey(user.authId)) {
+      await _authBox.put(user.authId, user);
+      return true;
+    }
+    return false;
   }
 
   /// Delete user from local database
@@ -74,19 +91,13 @@ class HiveService {
     await _authBox.delete(authId);
   }
 
-  /// Get currently logged in user details
-  Future<AuthHiveModel?> getCurrentUser(String authId) async {
-    return _authBox.get(authId);
+  /// Clear all auth data (Useful for full logout/factory reset)
+  Future<void> clearAllData() async {
+    await _authBox.clear();
   }
 
-  /// Check if email is already taken
-  bool isEmailExists(String email) {
-    return _authBox.values.any((user) => user.email == email);
-  }
-
-  /// Local logout (usually handled by session service, but here for completeness)
-  Future<void> logoutUser() async {
-    // Typically, local database remains, but session is cleared.
-    // If you want to wipe local data on logout, use _authBox.clear();
+  // Box close
+  Future<void> close() async {
+    await Hive.close();
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/profile_screen.dart';
 
 import 'package:nurser_e/features/splash/presentation/pages/splash_screens.dart';
 
@@ -12,7 +13,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: getApplicationTheme(),
-      home: SplashScreens(),
+      home: ProfileScreen(),
     );
   }
 }
