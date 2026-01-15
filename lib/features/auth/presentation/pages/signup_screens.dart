@@ -18,7 +18,8 @@ class SignupScreens extends ConsumerStatefulWidget {
 class _SignupScreensState extends ConsumerState<SignupScreens> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController =
+      TextEditingController();
 
   @override
   void dispose() {
@@ -53,13 +54,11 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
 
     // Use email as username for registration
     final username = email.split('@')[0];
-    
+
     // Call view model register method
-    ref.read(authViewModelProvider.notifier).register(
-      email: email,
-      username: username,
-      password: password,
-    );
+    ref
+        .read(authViewModelProvider.notifier)
+        .register(email: email, username: username, password: password);
   }
 
   void _navigateToLogin() {
@@ -72,7 +71,7 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authViewModelProvider);
-    
+
     // Listen to auth state changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {
       if (next.status == AuthStatus.registered) {
@@ -279,12 +278,7 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
                               ),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () {
-                                  Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (_) => const LoginScreens(),
-                                    ),
-                                  );
+                                  _navigateToLogin();
                                 },
                             ),
                           ],
@@ -294,15 +288,17 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
                     const SizedBox(height: 12),
                     MyButton(
                       elevation: 4,
-                      text: authState.status == AuthStatus.loading ? 'Signing Up...' : 'SignUp',
+                      text: authState.status == AuthStatus.loading
+                          ? 'Signing Up...'
+                          : 'SignUp',
                       textStyle: TextStyle(
                         fontFamily: 'Poppins Regular',
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
                         fontSize: 14,
                       ),
-                      onPressed: authState.status == AuthStatus.loading 
-                          ? () => {} 
+                      onPressed: authState.status == AuthStatus.loading
+                          ? () => {}
                           : _handleSignup,
                     ),
                     const SizedBox(height: 20),

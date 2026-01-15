@@ -53,6 +53,7 @@ class AuthApiModel {
     return AuthApiModel(
       email: entity.email,
       username: entity.username,
+      password: entity.password,
       profilePicture: entity.profilePicture,
     );
   }

@@ -4,7 +4,7 @@ import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/features/auth/data/datasources/auth_datasource.dart';
 import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
 
-//Provider
+// Provider
 final authLocalDatasourceProvider = Provider<AuthLocalDatasource>((ref) {
   final hiveService = ref.read(hiveServiceProvider);
   final userSessionService = ref.read(userSessionServiceProvider);
@@ -15,7 +15,7 @@ final authLocalDatasourceProvider = Provider<AuthLocalDatasource>((ref) {
   );
 });
 
-class AuthLocalDatasource implements IAuthDataSource {
+class AuthLocalDatasource implements IAuthLocalDataSource {
   final HiveService _hiveService;
   final UserSessionService _userSessionService;
 
@@ -24,30 +24,16 @@ class AuthLocalDatasource implements IAuthDataSource {
     required UserSessionService userSessionService,
   }) : _hiveService = hiveService,
        _userSessionService = userSessionService;
-  @override
-  Future<AuthHiveModel?> getCurrentUser() {
-    // TODO: implement getCurrentUser
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<bool> isEmailExists(String email) {
-    try {
-      final exists = _hiveService.isEmailExists(email);
-      return Future.value(exists);
-    } catch (e) {
-      return Future.value(false);
-    }
-  }
 
   @override
   Future<AuthHiveModel?> login(String email, String password) async {
     try {
       final user = await _hiveService.loginUser(email, password);
-      //below method saves users data in a shared pref password is not kept for better secrecy 
       if (user != null) {
+        // Updated to match your AuthHiveModel fields:
+        // authId, email, username, profilePicture
         await _userSessionService.saveUserSession(
-          userId: user.authId!,
+          userId: user.authId ?? '',
           email: user.email,
           username: user.username,
           profileImage: user.profilePicture ?? '',
@@ -55,28 +41,77 @@ class AuthLocalDatasource implements IAuthDataSource {
       }
       return user;
     } catch (e) {
-      return Future.value(null);
+      return null;
+    }
+  }
+
+  @override
+  Future<AuthHiveModel> register(AuthHiveModel user) async {
+    try {
+      await _hiveService.registerUser(user);
+      return user; // Return the user object as required by the new interface
+    } catch (e) {
+      throw Exception('Registration failed: ${e.toString()}');
+    }
+  }
+
+  @override
+  Future<AuthHiveModel?> getCurrentUser() async {
+    try {
+      final userId = _userSessionService.getUserId();
+      if (userId != null) {
+        return await _hiveService.getCurrentUser(userId);
+      }
+      return null;
+    } catch (e) {
+      return null;
     }
   }
 
   @override
   Future<bool> logout() async {
     try {
-      await _hiveService.logoutUser();
-      return Future.value(true);
+      await _userSessionService.clearUserSession();
+      return true;
     } catch (e) {
-      return Future.value(false);
+      return false;
     }
   }
 
   @override
-  Future<bool> register(AuthHiveModel model) async {
+  Future<bool> isEmailExists(String email) async {
     try {
-      await _hiveService.registerUser(model);
-      return Future.value(true);
+      return await _hiveService.isEmailExists(email);
     } catch (e) {
-      // Re-throw the exception to be handled by the repository
-      rethrow;
+      return false;
     }
+  }
+
+  @override
+  Future<AuthHiveModel?> getUserById(String authId) async {
+    try {
+      return await _hiveService.getUserById(authId);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<AuthHiveModel?> getUserByEmail(String email) async {
+    try {
+      return await _hiveService.getUserByEmail(email);
+    } catch (e) {
+      return null;
+    }
+  }
+
+  @override
+  Future<bool> updateUser(AuthHiveModel user) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<bool> deleteUser(String authId) async {
+    throw UnimplementedError();
   }
 }

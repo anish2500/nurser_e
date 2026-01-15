@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class MyTextField extends StatefulWidget {
+class MyTextField extends StatelessWidget {
   const MyTextField({
     super.key,
     required this.controller,
@@ -23,72 +23,26 @@ class MyTextField extends StatefulWidget {
   final BorderRadius? borderRadius;
 
   @override
-  State<MyTextField> createState() => _MyTextFieldState();
-}
-
-class _MyTextFieldState extends State<MyTextField> {
-  bool _obscureText = false;
-  bool _showPasswordToggle = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _obscureText = widget.obscure;
-    _showPasswordToggle = widget.obscure;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Colors.transparent,
-      child: TextField(
-        controller: widget.controller,
-        obscureText: _obscureText,
-        style: widget.textStyle ?? const TextStyle(
-          fontFamily: 'Poppins Regular',
-          fontSize: 16,
+    return TextField(
+      controller: controller,
+      obscureText: obscure,
+      style: textStyle ?? const TextStyle(
+        fontFamily: 'Poppins',
+        fontSize: 16,
+      ),
+      decoration: InputDecoration(
+        hintText: hint,
+        hintStyle: hintStyle ?? const TextStyle(
+          fontFamily: 'Poppins',
+          color: Color(0xFF9E9E9E),
         ),
-        decoration: InputDecoration(
-          hintText: widget.hint,
-          hintStyle: widget.hintStyle ?? const TextStyle(
-            fontFamily: 'Poppins Regular',
-            color: Color(0xFF9E9E9E),
-          ),
-          filled: true,
-          fillColor: widget.fillColor ?? const Color(0xFFF5F5F5),
-          contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-          border: OutlineInputBorder(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
-            borderSide: BorderSide.none,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.grey.shade300,
-              width: 1,
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(16),
-            borderSide: BorderSide(
-              color: Colors.green.shade400,
-              width: 2,
-            ),
-          ),
-          suffixIcon: _showPasswordToggle
-              ? IconButton(
-                  icon: Icon(
-                    _obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey.shade600,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscureText = !_obscureText;
-                    });
-                  },
-                )
-              : null,
+        filled: true,
+        fillColor: fillColor ?? const Color(0xFFE0E0E0),
+        contentPadding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        border: OutlineInputBorder(
+          borderRadius: borderRadius ?? BorderRadius.circular(12),
+          borderSide: BorderSide.none,
         ),
       ),
     );
