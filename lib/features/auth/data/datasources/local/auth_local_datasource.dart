@@ -22,18 +22,17 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
   AuthLocalDatasource({
     required HiveService hiveService,
     required UserSessionService userSessionService,
-  }) : _hiveService = hiveService,
-       _userSessionService = userSessionService;
+  })  : _hiveService = hiveService,
+        _userSessionService = userSessionService;
 
   @override
   Future<AuthHiveModel?> login(String email, String password) async {
     try {
-      final user = await _hiveService.loginUser(email, password);
+      // HiveService login returns the model or null
+      final user = await _hiveService.login(email, password);
       if (user != null) {
-        // Updated to match your AuthHiveModel fields:
-        // authId, email, username, profilePicture
         await _userSessionService.saveUserSession(
-          userId: user.authId ?? '',
+          userId: user.authId!, // Removed null check as it's required for login
           email: user.email,
           username: user.username,
           profileImage: user.profilePicture ?? '',
@@ -48,8 +47,8 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
   @override
   Future<AuthHiveModel> register(AuthHiveModel user) async {
     try {
-      await _hiveService.registerUser(user);
-      return user; // Return the user object as required by the new interface
+      await _hiveService.register(user);
+      return user;
     } catch (e) {
       throw Exception('Registration failed: ${e.toString()}');
     }
@@ -58,11 +57,14 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
   @override
   Future<AuthHiveModel?> getCurrentUser() async {
     try {
-      final userId = _userSessionService.getUserId();
-      if (userId != null) {
-        return await _hiveService.getCurrentUser(userId);
+      if (!_userSessionService.isLoggedIn()) {
+        return null;
       }
-      return null;
+
+      final userId = _userSessionService.getUserId();
+      if (userId == null) return null;
+
+      return await _hiveService.getUserById(userId);
     } catch (e) {
       return null;
     }
@@ -72,6 +74,7 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
   Future<bool> logout() async {
     try {
       await _userSessionService.clearUserSession();
+      // Optionally: await _hiveService.close(); if you want to close DB on logout
       return true;
     } catch (e) {
       return false;
@@ -81,7 +84,8 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
   @override
   Future<bool> isEmailExists(String email) async {
     try {
-      return await _hiveService.isEmailExists(email);
+      // Calling the updated HiveService method
+      return await _hiveService.isEmailRegistered(email);
     } catch (e) {
       return false;
     }
@@ -107,11 +111,20 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
 
   @override
   Future<bool> updateUser(AuthHiveModel user) async {
-    throw UnimplementedError();
+    try {
+      return await _hiveService.updateUser(user);
+    } catch (e) {
+      return false;
+    }
   }
 
   @override
   Future<bool> deleteUser(String authId) async {
-    throw UnimplementedError();
+    try {
+      await _hiveService.deleteUser(authId);
+      return true;
+    } catch (e) {
+      return false;
+    }
   }
 }

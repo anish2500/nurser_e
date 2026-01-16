@@ -12,7 +12,7 @@ void main() async {
   if (!kIsWeb) {
     final hiveService = HiveService();
     await hiveService.init();
-    await hiveService.openBoxes();
+    
 
     
   }
