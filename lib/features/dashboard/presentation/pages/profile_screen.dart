@@ -1,8 +1,12 @@
+import 'dart:io'; 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
+import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -12,14 +16,157 @@ class ProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _ProfileScreenState extends ConsumerState<ProfileScreen> {
-  // Theme configuration based on your requirements
-  final Color primaryGreen = Colors.green; 
+  // Theme configuration
+  final Color primaryGreen = Colors.green;
   final Color lightGreen = const Color(0xFFD8F3DC);
   final String fontFamily = 'Poppins Regular';
 
+  // Media state
+  final List<XFile> _selectedMedia = [];
+  final ImagePicker _imagePicker = ImagePicker();
+  String? _selectedMediaType;
+
+  //Permission handling
+  Future<bool> _requestPermission(Permission permission) async {
+    final status = await permission.status;
+    if (status.isGranted) return true;
+    
+    if (status.isDenied) {
+      final result = await permission.request();
+      return result.isGranted;
+    }
+    
+    if (status.isPermanentlyDenied) {
+      _showPermissionDeniedDialog();
+      return false;
+    }
+    return false;
+  }
+
+  void _showPermissionDeniedDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Permission Required"),
+        content: const Text(
+          "This feature requires permission to access your camera or gallery. Please enable it in your device settings.",
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              openAppSettings();
+            },
+            child: const Text('Open Settings'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // --- Media Picking Logic ---
+  Future<void> _pickFromCamera() async {
+    final hasPermission = await _requestPermission(Permission.camera);
+    if (!hasPermission) return;
+
+    final XFile? photo = await _imagePicker.pickImage(
+      source: ImageSource.camera,
+      imageQuality: 80,
+    );
+
+    if (photo != null) {
+      _handleSelectedMedia(photo, 'photo');
+    }
+  }
+
+  Future<void> _pickFromGallery({bool allowMultiple = false}) async {
+    try {
+      if (allowMultiple) {
+        final List<XFile> images = await _imagePicker.pickMultiImage(imageQuality: 80);
+        if (images.isNotEmpty) {
+          setState(() {
+            _selectedMedia.clear();
+            _selectedMedia.addAll(images);
+            _selectedMediaType = 'photo';
+          });
+        }
+      } else {
+        final XFile? image = await _imagePicker.pickImage(
+          source: ImageSource.gallery,
+          imageQuality: 80,
+        );
+        if (image != null) {
+          _handleSelectedMedia(image, 'photo');
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        showErrorSnackBar(context, 'Unable to access gallery.');
+      }
+    }
+  }
+
+  void _handleSelectedMedia(XFile file, String type) {
+    setState(() {
+      _selectedMedia.clear();
+      _selectedMedia.add(file);
+      _selectedMediaType = type;
+    });
+    // Optional: Trigger upload to server here via ViewModel
+    // ref.read(authViewModelProvider.notifier).uploadProfileImage(file.path);
+  }
+
+  Future<void> _pickMedia() async {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.camera_alt_outlined),
+                title: const Text('Open Camera'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickFromCamera();
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.photo_library_outlined),
+                title: const Text('Open Gallery'),
+                onTap: () {
+                  Navigator.pop(context);
+                  _pickFromGallery();
+                },
+              ),
+              if (_selectedMedia.isNotEmpty)
+                ListTile(
+                  leading: const Icon(Icons.delete_outline, color: Colors.red),
+                  title: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  onTap: () {
+                    setState(() => _selectedMedia.clear());
+                    Navigator.pop(context);
+                  },
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Watching the session service to display actual user data
     final userSession = ref.watch(userSessionServiceProvider);
     final userName = userSession.getUsername() ?? 'User';
     final userEmail = userSession.getUserEmail() ?? 'Email not available';
@@ -52,25 +199,27 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               child: Row(
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      // TODO: Implement image picker functionality
-                      // This is where you'll add your image selection code later
-                      print('Profile image tapped - add image picker code here');
-                    },
+                    onTap: _pickMedia,
                     child: Stack(
                       children: [
                         CircleAvatar(
                           radius: 35,
                           backgroundColor: Colors.white,
-                          child: Text(
-                            userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                            style: TextStyle(
-                              fontSize: 24, 
-                              color: primaryGreen,
-                              fontWeight: FontWeight.bold,
-                              fontFamily: fontFamily,
-                            ),
-                          ),
+                          // DISPLAY SELECTED IMAGE HERE
+                          backgroundImage: _selectedMedia.isNotEmpty
+                              ? FileImage(File(_selectedMedia[0].path))
+                              : null,
+                          child: _selectedMedia.isEmpty
+                              ? Text(
+                                  userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    color: primaryGreen,
+                                    fontWeight: FontWeight.bold,
+                                    fontFamily: fontFamily,
+                                  ),
+                                )
+                              : null, // Initial hidden when image is present
                         ),
                         Positioned(
                           bottom: 0,
@@ -79,16 +228,13 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                             width: 24,
                             height: 24,
                             decoration: BoxDecoration(
-                              color: primaryGreen,
-                              shape: BoxShape.circle,
-                              border: Border.all(
-                                color: Colors.white,
-                                width: 2,
-                              ),
-                            ),
-                            child: const Icon(
-                              Icons.camera_alt,
                               color: Colors.white,
+                              shape: BoxShape.circle,
+                              border: Border.all(color: primaryGreen, width: 2),
+                            ),
+                            child: Icon(
+                              Icons.camera_alt,
+                              color: primaryGreen,
                               size: 14,
                             ),
                           ),
@@ -125,7 +271,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 30),
 
             // --- Logout Menu Item ---
@@ -133,7 +279,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               icon: Icons.logout_rounded,
               title: "Log out",
               subtitle: "Further secure your account for safety",
-              onTap: () => _showLogoutDialog(context), // Triggers the confirmation
+              onTap: () => _showLogoutDialog(context),
             ),
           ],
         ),
@@ -141,7 +287,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  // Simplified UI for the menu rows
   Widget _buildMenuItem({
     required IconData icon,
     required String title,
@@ -194,36 +339,22 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     );
   }
 
-  // Confirmation Dialog logic from your reference example
   void _showLogoutDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text(
-          'Logout',
-          style: TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.bold),
-        ),
-        content: Text(
-          'Are you sure you want to logout?',
-          style: TextStyle(fontFamily: fontFamily),
-        ),
+        title: Text('Logout', style: TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.bold)),
+        content: Text('Are you sure you want to logout?', style: TextStyle(fontFamily: fontFamily)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text(
-              'Cancel',
-              style: TextStyle(color: Colors.grey, fontFamily: fontFamily),
-            ),
+            child: Text('Cancel', style: TextStyle(color: Colors.grey, fontFamily: fontFamily)),
           ),
           TextButton(
             onPressed: () async {
-              Navigator.pop(dialogContext); // Close dialog
-              
-              // 1. Call the logout logic from your AuthViewModel
+              Navigator.pop(dialogContext);
               await ref.read(authViewModelProvider.notifier).logout();
-              
-              // 2. Navigate to login and clear navigation history
               if (mounted) {
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -232,14 +363,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 );
               }
             },
-            child: Text(
-              'Logout',
-              style: TextStyle(
-                color: Colors.red, // Keeps the "Warning" feel for logout
-                fontWeight: FontWeight.bold,
-                fontFamily: fontFamily,
-              ),
-            ),
+            child: Text('Logout', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontFamily: fontFamily)),
           ),
         ],
       ),
