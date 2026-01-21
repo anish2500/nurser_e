@@ -50,6 +50,9 @@ dependencies:
   flutter_secure_storage: ^10.0.0
   connectivity_plus: ^7.0.0
   dio: ^5.4.0
+  permission_handler: ^12.0.1
+  image_picker: ^1.2.1
+  flutter_launcher_icons: ^0.14.4
  
  
 
@@ -116,3 +119,8 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+
+flutter_launcher_icons:
+  android: "launcher_icon"
+  image_path: "assets/icons/icon.png" 
+  min_sdk_andorid: 21

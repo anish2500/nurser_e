@@ -51,17 +51,49 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
               child: Row(
                 children: [
-                  CircleAvatar(
-                    radius: 35,
-                    backgroundColor: Colors.white,
-                    child: Text(
-                      userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
-                      style: TextStyle(
-                        fontSize: 24, 
-                        color: primaryGreen,
-                        fontWeight: FontWeight.bold,
-                        fontFamily: fontFamily,
-                      ),
+                  GestureDetector(
+                    onTap: () {
+                      // TODO: Implement image picker functionality
+                      // This is where you'll add your image selection code later
+                      print('Profile image tapped - add image picker code here');
+                    },
+                    child: Stack(
+                      children: [
+                        CircleAvatar(
+                          radius: 35,
+                          backgroundColor: Colors.white,
+                          child: Text(
+                            userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                            style: TextStyle(
+                              fontSize: 24, 
+                              color: primaryGreen,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: fontFamily,
+                            ),
+                          ),
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          right: 0,
+                          child: Container(
+                            width: 24,
+                            height: 24,
+                            decoration: BoxDecoration(
+                              color: primaryGreen,
+                              shape: BoxShape.circle,
+                              border: Border.all(
+                                color: Colors.white,
+                                width: 2,
+                              ),
+                            ),
+                            child: const Icon(
+                              Icons.camera_alt,
+                              color: Colors.white,
+                              size: 14,
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                   const SizedBox(width: 15),
