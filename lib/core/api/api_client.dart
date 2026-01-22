@@ -4,17 +4,20 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
+import 'package:nurser_e/core/services/storage/token_service.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
 // Provider for ApiClient
 final apiClientProvider = Provider<ApiClient>((ref) {
-  return ApiClient();
+  final tokenService = ref.watch(tokenServiceProvider); // Get the TokenService
+  return ApiClient(tokenService);
 });
 
 class ApiClient {
   late final Dio _dio;
+  final TokenService _tokenService;
 
-  ApiClient() {
+  ApiClient(this._tokenService) {
     _dio = Dio(
       BaseOptions(
         baseUrl: ApiEndpoints.baseUrl,
@@ -28,7 +31,7 @@ class ApiClient {
     );
 
     // Add interceptors
-    _dio.interceptors.add(_AuthInterceptor());
+    _dio.interceptors.add(_AuthInterceptor(_tokenService));
 
     // Auto retry on network failures
     _dio.interceptors.add(
@@ -139,8 +142,9 @@ class ApiClient {
 
 // Auth Interceptor to add JWT token to requests
 class _AuthInterceptor extends Interceptor {
-  final _storage = const FlutterSecureStorage();
-  static const String _tokenKey = 'auth_token';
+  final TokenService _tokenService; // Use your service instead of SecureStorage
+
+  _AuthInterceptor(this._tokenService);
 
   @override
   void onRequest(
@@ -150,7 +154,8 @@ class _AuthInterceptor extends Interceptor {
     // Skip auth for public endpoints
     final publicEndpoints = [
       ApiEndpoints.login,
-      ApiEndpoints.register
+      ApiEndpoints.register,
+
       // ApiEndpoints.userRegister
     ];
 
@@ -163,7 +168,7 @@ class _AuthInterceptor extends Interceptor {
         options.path == ApiEndpoints.register;
 
     if (!isPublicGet && !isAuthEndpoint) {
-      final token = await _storage.read(key: _tokenKey);
+      final token = _tokenService.getToken();
       if (token != null) {
         options.headers['Authorization'] = 'Bearer $token';
       }
@@ -173,13 +178,20 @@ class _AuthInterceptor extends Interceptor {
   }
 
   @override
-  void onError(DioException err, ErrorInterceptorHandler handler) {
-    // Handle 401 Unauthorized - token expired
+  void onError(DioException err, ErrorInterceptorHandler handler) async {
+    // Handle 401 Unauthorized - token expired or invalid
     if (err.response?.statusCode == 401) {
-      // Clear token and redirect to login
-      _storage.delete(key: _tokenKey);
-      // You can add navigation logic here or use a callback
+      // 1. Clear the token from SharedPreferences
+      await _tokenService.removeToken();
+
+      // 2. Log for debugging
+      debugPrint('401 Unauthorized: Token cleared.');
+
+      // Note: To handle navigation (redirect to login),
+      // it's best to use a Stream or a StateProvider in Riverpod
+      // that the main UI listens to.
     }
+
     handler.next(err);
   }
 }

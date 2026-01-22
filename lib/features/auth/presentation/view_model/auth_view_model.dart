@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/features/auth/domain/usecases/get_current_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/login_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/register_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/logout_usecase.dart'; // Add this
+import 'package:nurser_e/features/auth/domain/usecases/upload_photo_usecase.dart';
 import 'package:nurser_e/features/auth/presentation/state/auth_state.dart';
 
 // Provider definition
@@ -15,6 +18,7 @@ class AuthViewModel extends Notifier<AuthState> {
   late final LoginUsecase _loginUsecase;
   late final LogoutUsecase _logoutUsecase;
   late final GetCurrentUserUsecase _getCurrentUserUsecase;
+  late final UploadPhotoUsecase _uploadPhotoUsecase;
 
   @override
   AuthState build() {
@@ -23,8 +27,9 @@ class AuthViewModel extends Notifier<AuthState> {
     _loginUsecase = ref.read(loginUsecaseProvider);
     _logoutUsecase = ref.read(logoutUsecaseProvider);
     _getCurrentUserUsecase = ref.read(getCurrentUserUsecaseProvider);
-    
-    return AuthState.initial(); 
+    _uploadPhotoUsecase = ref.read(uploadPhotoUsecaseProvider);
+
+    return AuthState.initial();
   }
 
   /// Register User
@@ -84,7 +89,8 @@ class AuthViewModel extends Notifier<AuthState> {
         status: AuthStatus.error,
         errorMessage: failure.message,
       ),
-      (success) => state = AuthState.initial(), // Reset to unauthenticated/initial state
+      (success) =>
+          state = AuthState.initial(), // Reset to unauthenticated/initial state
     );
   }
 
@@ -100,9 +106,32 @@ class AuthViewModel extends Notifier<AuthState> {
         errorMessage: failure.message,
       ),
       (user) => state = state.copyWith(
-        status: AuthStatus.authenticated, 
+        status: AuthStatus.authenticated,
         authEntity: user,
       ),
+    );
+  }
+
+  //upload photo
+
+  Future<void> uploadPhoto(File photo) async {
+    state = state.copyWith(status: AuthStatus.loading);
+
+    final result = await _uploadPhotoUsecase(photo);
+
+    result.fold(
+      (failure) {
+        state = state.copyWith(
+          status: AuthStatus.error,
+          errorMessage: failure.message,
+        );
+      },
+      (imageName) {
+        state = state.copyWith(
+          status: AuthStatus.loaded,
+          uploadPhotoName: imageName,
+        );
+      },
     );
   }
 

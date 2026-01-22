@@ -1,4 +1,4 @@
-import 'dart:io'; 
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
@@ -30,12 +30,12 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   Future<bool> _requestPermission(Permission permission) async {
     final status = await permission.status;
     if (status.isGranted) return true;
-    
+
     if (status.isDenied) {
       final result = await permission.request();
       return result.isGranted;
     }
-    
+
     if (status.isPermanentlyDenied) {
       _showPermissionDeniedDialog();
       return false;
@@ -69,43 +69,124 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   // --- Media Picking Logic ---
-  Future<void> _pickFromCamera() async {
-    final hasPermission = await _requestPermission(Permission.camera);
-    if (!hasPermission) return;
+  Future<void> _pickFromGallery() async {
+    try {
+      final hasPermission = await _requestPermission(Permission.photos);
+      if (!hasPermission) return;
 
-    final XFile? photo = await _imagePicker.pickImage(
-      source: ImageSource.camera,
-      imageQuality: 80,
-    );
+      final XFile? image = await _imagePicker.pickImage(
+        source: ImageSource.gallery,
+        imageQuality: 80,
+      );
 
-    if (photo != null) {
-      _handleSelectedMedia(photo, 'photo');
+      if (image != null) {
+        final file = File(image.path);
+        setState(() {
+          _selectedMedia.clear();
+          _selectedMedia.add(image);
+          _selectedMediaType = 'photo';
+        });
+
+        // Upload to server and save to session
+        final result = await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
+        result.fold(
+          (failure) {
+            if (mounted) {
+              showMySnackBar(
+                context: context,
+                message: 'Upload failed: ${failure.message}',
+                color: Colors.red,
+              );
+            }
+          },
+          (profilePictureUrl) async {
+            // Save to session for persistence
+            await ref.read(userSessionServiceProvider).saveUserSession(
+              userId: ref.read(userSessionServiceProvider).getUserId() ?? '',
+              email: ref.read(userSessionServiceProvider).getUserEmail() ?? '',
+              username: ref.read(userSessionServiceProvider).getUsername() ?? '',
+              profileImage: profilePictureUrl,
+            );
+            
+            if (mounted) {
+              showMySnackBar(
+                context: context,
+                message: 'Profile picture updated successfully!',
+                color: Colors.green,
+              );
+            }
+          },
+        );
+      }
+    } catch (e) {
+      debugPrint('Gallery Error $e');
+      if (mounted) {
+        showMySnackBar(
+          context: context,
+          message: 'Unable to access gallery. Please try again.',
+          color: Colors.red,
+        );
+      }
     }
   }
 
-  Future<void> _pickFromGallery({bool allowMultiple = false}) async {
+  Future<void> _pickFromCamera() async {
     try {
-      if (allowMultiple) {
-        final List<XFile> images = await _imagePicker.pickMultiImage(imageQuality: 80);
-        if (images.isNotEmpty) {
-          setState(() {
-            _selectedMedia.clear();
-            _selectedMedia.addAll(images);
-            _selectedMediaType = 'photo';
-          });
-        }
-      } else {
-        final XFile? image = await _imagePicker.pickImage(
-          source: ImageSource.gallery,
-          imageQuality: 80,
+      final hasPermission = await _requestPermission(Permission.camera);
+      if (!hasPermission) return;
+
+      final XFile? photo = await _imagePicker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80,
+      );
+
+      if (photo != null) {
+        final file = File(photo.path);
+        setState(() {
+          _selectedMedia.clear();
+          _selectedMedia.add(photo);
+          _selectedMediaType = 'photo';
+        });
+        
+        // Upload to server and save to session
+        final result = await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
+        result.fold(
+          (failure) {
+            if (mounted) {
+              showMySnackBar(
+                context: context,
+                message: 'Upload failed: ${failure.message}',
+                color: Colors.red,
+              );
+            }
+          },
+          (profilePictureUrl) async {
+            // Save to session for persistence
+            await ref.read(userSessionServiceProvider).saveUserSession(
+              userId: ref.read(userSessionServiceProvider).getUserId() ?? '',
+              email: ref.read(userSessionServiceProvider).getUserEmail() ?? '',
+              username: ref.read(userSessionServiceProvider).getUsername() ?? '',
+              profileImage: profilePictureUrl,
+            );
+            
+            if (mounted) {
+              showMySnackBar(
+                context: context,
+                message: 'Profile picture updated successfully!',
+                color: Colors.green,
+              );
+            }
+          },
         );
-        if (image != null) {
-          _handleSelectedMedia(image, 'photo');
-        }
       }
     } catch (e) {
+      debugPrint('Camera Error $e');
       if (mounted) {
-        showErrorSnackBar(context, 'Unable to access gallery.');
+        showMySnackBar(
+          context: context,
+          message: 'Unable to access camera. Please try again.',
+          color: Colors.red,
+        );
       }
     }
   }
@@ -152,7 +233,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               if (_selectedMedia.isNotEmpty)
                 ListTile(
                   leading: const Icon(Icons.delete_outline, color: Colors.red),
-                  title: const Text('Remove Photo', style: TextStyle(color: Colors.red)),
+                  title: const Text(
+                    'Remove Photo',
+                    style: TextStyle(color: Colors.red),
+                  ),
                   onTap: () {
                     setState(() => _selectedMedia.clear());
                     Navigator.pop(context);
@@ -166,10 +250,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    // Load existing profile picture from session
+    _profilePictureUrl = ref.read(userSessionServiceProvider).getUserProfileImage();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final userSession = ref.watch(userSessionServiceProvider);
     final userName = userSession.getUsername() ?? 'User';
     final userEmail = userSession.getUserEmail() ?? 'Email not available';
+    final storedProfileImage = userSession.getUserProfileImage(); // Get from session
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -205,13 +297,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         CircleAvatar(
                           radius: 35,
                           backgroundColor: Colors.white,
-                          // DISPLAY SELECTED IMAGE HERE
+                          // Priority: New upload > Stored > Initial
                           backgroundImage: _selectedMedia.isNotEmpty
                               ? FileImage(File(_selectedMedia[0].path))
-                              : null,
-                          child: _selectedMedia.isEmpty
+                              : (storedProfileImage != null && storedProfileImage!.isNotEmpty)
+                                  ? NetworkImage('http://192.168.18.4:5050/$storedProfileImage')
+                                  : null,
+                          child: (_selectedMedia.isEmpty && (storedProfileImage == null || storedProfileImage!.isEmpty))
                               ? Text(
-                                  userName.isNotEmpty ? userName[0].toUpperCase() : 'U',
+                                  userName.isNotEmpty
+                                      ? userName[0].toUpperCase()
+                                      : 'U',
                                   style: TextStyle(
                                     fontSize: 24,
                                     color: primaryGreen,
@@ -219,7 +315,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                                     fontFamily: fontFamily,
                                   ),
                                 )
-                              : null, // Initial hidden when image is present
+                              : null,
                         ),
                         Positioned(
                           bottom: 0,
@@ -332,7 +428,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios, size: 16, color: Colors.black26),
+            const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.black26,
+            ),
           ],
         ),
       ),
@@ -344,12 +444,21 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
       context: context,
       builder: (dialogContext) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: Text('Logout', style: TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.bold)),
-        content: Text('Are you sure you want to logout?', style: TextStyle(fontFamily: fontFamily)),
+        title: Text(
+          'Logout',
+          style: TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.bold),
+        ),
+        content: Text(
+          'Are you sure you want to logout?',
+          style: TextStyle(fontFamily: fontFamily),
+        ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
-            child: Text('Cancel', style: TextStyle(color: Colors.grey, fontFamily: fontFamily)),
+            child: Text(
+              'Cancel',
+              style: TextStyle(color: Colors.grey, fontFamily: fontFamily),
+            ),
           ),
           TextButton(
             onPressed: () async {
@@ -363,7 +472,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 );
               }
             },
-            child: Text('Logout', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold, fontFamily: fontFamily)),
+            child: Text(
+              'Logout',
+              style: TextStyle(
+                color: Colors.red,
+                fontWeight: FontWeight.bold,
+                fontFamily: fontFamily,
+              ),
+            ),
           ),
         ],
       ),
