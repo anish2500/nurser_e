@@ -25,6 +25,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   final List<XFile> _selectedMedia = [];
   final ImagePicker _imagePicker = ImagePicker();
   String? _selectedMediaType;
+  String? _profilePictureUrl; // Add this back
 
   //Permission handling
   Future<bool> _requestPermission(Permission permission) async {
@@ -87,36 +88,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           _selectedMediaType = 'photo';
         });
 
-        // Upload to server and save to session
-        final result = await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
-        result.fold(
-          (failure) {
-            if (mounted) {
-              showMySnackBar(
-                context: context,
-                message: 'Upload failed: ${failure.message}',
-                color: Colors.red,
-              );
-            }
-          },
-          (profilePictureUrl) async {
-            // Save to session for persistence
-            await ref.read(userSessionServiceProvider).saveUserSession(
-              userId: ref.read(userSessionServiceProvider).getUserId() ?? '',
-              email: ref.read(userSessionServiceProvider).getUserEmail() ?? '',
-              username: ref.read(userSessionServiceProvider).getUsername() ?? '',
-              profileImage: profilePictureUrl,
-            );
-            
-            if (mounted) {
-              showMySnackBar(
-                context: context,
-                message: 'Profile picture updated successfully!',
-                color: Colors.green,
-              );
-            }
-          },
-        );
+        // Upload to server
+        await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
+        
+        // After upload, get the updated profile picture from session
+        final updatedProfileImage = ref.read(userSessionServiceProvider).getUserProfileImage();
+        if (updatedProfileImage != null && updatedProfileImage.isNotEmpty) {
+          setState(() {
+            _profilePictureUrl = updatedProfileImage;
+          });
+        }
       }
     } catch (e) {
       debugPrint('Gallery Error $e');
@@ -148,36 +129,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           _selectedMediaType = 'photo';
         });
         
-        // Upload to server and save to session
-        final result = await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
-        result.fold(
-          (failure) {
-            if (mounted) {
-              showMySnackBar(
-                context: context,
-                message: 'Upload failed: ${failure.message}',
-                color: Colors.red,
-              );
-            }
-          },
-          (profilePictureUrl) async {
-            // Save to session for persistence
-            await ref.read(userSessionServiceProvider).saveUserSession(
-              userId: ref.read(userSessionServiceProvider).getUserId() ?? '',
-              email: ref.read(userSessionServiceProvider).getUserEmail() ?? '',
-              username: ref.read(userSessionServiceProvider).getUsername() ?? '',
-              profileImage: profilePictureUrl,
-            );
-            
-            if (mounted) {
-              showMySnackBar(
-                context: context,
-                message: 'Profile picture updated successfully!',
-                color: Colors.green,
-              );
-            }
-          },
-        );
+        // Upload to server
+        await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
+        
+        // After upload, get the updated profile picture from session
+        final updatedProfileImage = ref.read(userSessionServiceProvider).getUserProfileImage();
+        if (updatedProfileImage != null && updatedProfileImage.isNotEmpty) {
+          setState(() {
+            _profilePictureUrl = updatedProfileImage;
+          });
+        }
       }
     } catch (e) {
       debugPrint('Camera Error $e');
@@ -261,7 +222,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userSession = ref.watch(userSessionServiceProvider);
     final userName = userSession.getUsername() ?? 'User';
     final userEmail = userSession.getUserEmail() ?? 'Email not available';
-    final storedProfileImage = userSession.getUserProfileImage(); // Get from session
+    
+    // Use _profilePictureUrl for consistency
+    final displayImage = _profilePictureUrl?.isNotEmpty == true 
+        ? 'http://192.168.18.4:5050/$_profilePictureUrl'
+        : null;
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -300,10 +265,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           // Priority: New upload > Stored > Initial
                           backgroundImage: _selectedMedia.isNotEmpty
                               ? FileImage(File(_selectedMedia[0].path))
-                              : (storedProfileImage != null && storedProfileImage!.isNotEmpty)
-                                  ? NetworkImage('http://192.168.18.4:5050/$storedProfileImage')
+                              : displayImage != null
+                                  ? NetworkImage(displayImage!)
                                   : null,
-                          child: (_selectedMedia.isEmpty && (storedProfileImage == null || storedProfileImage!.isEmpty))
+                          child: (_selectedMedia.isEmpty && displayImage == null)
                               ? Text(
                                   userName.isNotEmpty
                                       ? userName[0].toUpperCase()

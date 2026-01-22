@@ -45,6 +45,7 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
         userId: user.authId!,
         email: user.email,
         username: user.username,
+        // userProfile : user.profilePicture,
       );
 
       //save token

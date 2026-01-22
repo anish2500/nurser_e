@@ -27,6 +27,8 @@ class UserSessionService {
     required String userId,
     required String email,
     required String username,
+    // required String? userProfile,
+
   
     String? profileImage,
   }) async {
