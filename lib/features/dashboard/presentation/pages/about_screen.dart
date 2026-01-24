@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 
 class AboutScreen extends StatefulWidget {
   const AboutScreen({super.key});
@@ -12,7 +13,7 @@ class _AboutScreenState extends State<AboutScreen> {
   Widget build(BuildContext context) {
     final primaryGreen = Colors.green;
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F2ED),
+      backgroundColor: context.backgroundColor,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -34,7 +35,7 @@ class _AboutScreenState extends State<AboutScreen> {
                 style: TextStyle(
                   fontFamily: 'Poppins Regular',
                   fontSize: 14,
-                  color: Colors.grey[700],
+                  color: context.textSecondary,
                   height: 1.4,
                 ),
               ),
@@ -43,15 +44,9 @@ class _AboutScreenState extends State<AboutScreen> {
                 height: 160,
                 width: double.infinity,
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.surfaceColor,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
-                      blurRadius: 12,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
+                  boxShadow: context.cardShadow,
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(16),
@@ -90,7 +85,7 @@ class _AboutScreenState extends State<AboutScreen> {
               Container(
                 padding: const EdgeInsets.all(14),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: context.surfaceColor,
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(color: primaryGreen.withOpacity(0.2)),
                 ),
@@ -112,7 +107,7 @@ class _AboutScreenState extends State<AboutScreen> {
                         style: TextStyle(
                           fontFamily: 'Poppins Regular',
                           fontSize: 13,
-                          color: Colors.grey[700],
+                          color: context.textSecondary,
                         ),
                       ),
                     ),
@@ -132,26 +127,20 @@ class _AboutScreenState extends State<AboutScreen> {
       width: double.infinity,
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: context.surfaceColor,
         borderRadius: BorderRadius.circular(14),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
+        boxShadow: context.softShadow,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Poppins Bold',
               fontSize: 16,
               fontWeight: FontWeight.w700,
-              color: Colors.black87,
+              color: context.textPrimary,
             ),
           ),
           const SizedBox(height: 6),
@@ -160,7 +149,7 @@ class _AboutScreenState extends State<AboutScreen> {
             style: TextStyle(
               fontFamily: 'Poppins Regular',
               fontSize: 13,
-              color: Colors.grey[700],
+              color: context.textSecondary,
               height: 1.4,
             ),
           ),
