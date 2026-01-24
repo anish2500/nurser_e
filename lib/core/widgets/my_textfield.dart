@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 
 class MyTextField extends StatefulWidget {
   const MyTextField({
@@ -47,18 +48,19 @@ class _MyTextFieldState extends State<MyTextField> {
       child: TextField(
         controller: widget.controller,
         obscureText: _obscureText,
-        style: widget.textStyle ?? const TextStyle(
+        style: widget.textStyle ?? TextStyle(
           fontFamily: 'Poppins',
           fontSize: 16,
+          color: context.isDarkMode ? context.textPrimary : Colors.black87,
         ),
         decoration: InputDecoration(
           hintText: widget.hint,
-          hintStyle: widget.hintStyle ?? const TextStyle(
+          hintStyle: widget.hintStyle ?? TextStyle(
             fontFamily: 'Poppins',
-            color: Color(0xFF9E9E9E),
+            color: context.isDarkMode ? context.textSecondary : Colors.grey[600],
           ),
           filled: true,
-          fillColor: widget.fillColor ?? const Color(0xFFF5F5F5),
+          fillColor: widget.fillColor ?? context.inputFillColor,
           contentPadding: widget.contentPadding ?? const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
           border: OutlineInputBorder(
             borderRadius: widget.borderRadius ?? BorderRadius.circular(25),
@@ -85,7 +87,7 @@ class _MyTextFieldState extends State<MyTextField> {
               ? IconButton(
                   icon: Icon(
                     _obscureText ? Icons.visibility_off : Icons.visibility,
-                    color: Colors.grey[600],
+                    color: context.textSecondary,
                   ),
                   onPressed: () {
                     setState(() {

@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
 import 'package:nurser_e/features/auth/presentation/state/auth_state.dart';
@@ -96,7 +97,7 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
       }
     });
     return Scaffold(
-      backgroundColor: const Color(0xFFF5F2ED),
+      backgroundColor: context.backgroundColor,
       body: Column(
         children: [
           // Header with back button and logo
@@ -104,7 +105,7 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
             flex: 4,
             child: Container(
               width: double.infinity,
-              color: const Color(0xFFF5F2ED),
+              color: context.backgroundColor,
               child: Stack(
                 children: [
                   // Back button
@@ -112,9 +113,9 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
                     top: 50,
                     left: 20,
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.black,
+                        color: context.textPrimary,
                         size: 20,
                       ),
                       onPressed: () => Navigator.pop(context),
@@ -175,11 +176,11 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
                           ),
                         ),
                         const SizedBox(height: 8),
-                        const Text(
+                        Text(
                           'Create your account to get started',
                           style: TextStyle(
                             fontSize: 18,
-                            color: Colors.grey,
+                            color: context.textSecondary,
                             fontWeight: FontWeight.w400,
                           ),
                         ),
@@ -196,36 +197,25 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.surfaceColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, -5),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
+                boxShadow: context.cardShadow,
               ),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       'SignUp',
                       style: TextStyle(
                         fontFamily: 'Poppins Regular',
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black,
+                        color: context.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
@@ -233,43 +223,31 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
                       controller: _emailController,
                       hint: 'Email Address',
                       obscure: false,
-                      hintStyle: const TextStyle(
-                        fontFamily: 'Poppins Regular',
-                        color: Colors.black54,
-                      ),
                     ),
                     const SizedBox(height: 8),
                     MyTextField(
                       controller: _passwordController,
                       hint: 'Password',
                       obscure: true,
-                      hintStyle: const TextStyle(
-                        fontFamily: 'Poppins Regular',
-                        color: Colors.black54,
-                      ),
                     ),
                     const SizedBox(height: 8),
                     MyTextField(
                       controller: _confirmPasswordController,
                       hint: 'Confirm Password',
                       obscure: true,
-                      hintStyle: const TextStyle(
-                        fontFamily: 'Poppins Regular',
-                        color: Colors.black54,
-                      ),
                     ),
                     const SizedBox(height: 10),
                     Center(
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Poppins Regular',
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black,
+                            color: context.textPrimary,
                           ),
                           children: [
-                            const TextSpan(text: "Already have an account? "),
+                            TextSpan(text: "Already have an account? "),
                             TextSpan(
                               text: 'Login',
                               style: const TextStyle(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/pages/signup_screens.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
@@ -16,7 +17,7 @@ class DisplayScreens extends StatelessWidget {
           Expanded(
             flex: 6,
             child: Container(
-              color: Colors.white,
+              color: context.surfaceColor,
               child: Center(
                 child: Image.asset(
                   'assets/images/back.jpg',
@@ -31,39 +32,39 @@ class DisplayScreens extends StatelessWidget {
             flex: 5,
             child: Container(
               width: double.infinity,
-              color: Colors.white,
+              color: context.surfaceColor,
               padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text(
+                  Text(
                     'Hello,',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                      color: context.textPrimary,
                     ),
                   ),
 
                   const SizedBox(height: 6),
 
-                  const Text(
+                  Text(
                     'Welcome to nurserE',
                     style: TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      color: Colors.black,
+                      color: context.textPrimary,
                     ),
                   ),
 
                   const SizedBox(height: 16),
 
-                  const Text(
+                  Text(
                     'Your Green Companion',
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.grey,
+                      color: context.textSecondary,
                     ),
                   ),
 

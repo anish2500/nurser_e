@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
@@ -237,17 +238,17 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         : null;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: context.backgroundColor,
       appBar: AppBar(
         title: Text(
           "Profile",
           style: TextStyle(
-            color: Colors.black,
+            color: context.textPrimary,
             fontFamily: fontFamily,
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: context.surfaceColor,
         elevation: 0,
       ),
       body: SingleChildScrollView(
@@ -373,7 +374,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: lightGreen,
+                color: context.isDarkMode ? Colors.grey[800] : lightGreen,
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Icon(icon, color: primaryGreen),
@@ -389,23 +390,24 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                       fontFamily: fontFamily,
+                      color: context.textPrimary,
                     ),
                   ),
                   Text(
                     subtitle,
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey[600],
+                      color: context.textSecondary,
                       fontFamily: fontFamily,
                     ),
                   ),
                 ],
               ),
             ),
-            const Icon(
+            Icon(
               Icons.arrow_forward_ios,
               size: 16,
-              color: Colors.black26,
+              color: context.textSecondary,
             ),
           ],
         ),
@@ -417,21 +419,32 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
+        backgroundColor: context.surfaceColor,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
         title: Text(
           'Logout',
-          style: TextStyle(fontFamily: fontFamily, fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontFamily: fontFamily, 
+            fontWeight: FontWeight.bold,
+            color: context.textPrimary,
+          ),
         ),
         content: Text(
           'Are you sure you want to logout?',
-          style: TextStyle(fontFamily: fontFamily),
+          style: TextStyle(
+            fontFamily: fontFamily,
+            color: context.textSecondary,
+          ),
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(dialogContext),
             child: Text(
               'Cancel',
-              style: TextStyle(color: Colors.grey, fontFamily: fontFamily),
+              style: TextStyle(
+                color: context.textSecondary, 
+                fontFamily: fontFamily,
+              ),
             ),
           ),
           TextButton(

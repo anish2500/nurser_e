@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/bottom_navigation_layout.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/core/widgets/my_textfield.dart';
@@ -60,7 +61,7 @@ class LoginScreens extends ConsumerWidget {
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
-      backgroundColor: const Color(0xFFF5F2ED),
+      backgroundColor: context.backgroundColor,
       body: Column(
         children: [
           // Header with back button and logo
@@ -68,7 +69,7 @@ class LoginScreens extends ConsumerWidget {
             flex: 4,
             child: Container(
               width: double.infinity,
-              color: const Color(0xFFF5F2ED),
+              color: context.backgroundColor,
               child: Stack(
                 children: [
                   // Back button
@@ -76,9 +77,9 @@ class LoginScreens extends ConsumerWidget {
                     top: 50,
                     left: 20,
                     child: IconButton(
-                      icon: const Icon(
+                      icon: Icon(
                         Icons.arrow_back_ios,
-                        color: Colors.black,
+                        color: context.textPrimary,
                         size: 20,
                       ),
                       onPressed: () => Navigator.pop(context),
@@ -160,70 +161,51 @@ class LoginScreens extends ConsumerWidget {
               width: double.infinity,
               padding: const EdgeInsets.fromLTRB(15, 15, 15, 15),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: context.surfaceColor,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(30),
                   topRight: Radius.circular(30),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 20,
-                    offset: const Offset(0, -5),
-                  ),
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 10,
-                    offset: const Offset(0, -2),
-                  ),
-                ],
+                boxShadow: context.cardShadow,
               ),
               child: SingleChildScrollView(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     const SizedBox(height: 20),
-                    const Text(
+                    Text(
                       'Login',
                       style: TextStyle(
                         fontFamily: 'Poppins Regular',
                         fontSize: 20,
                         fontWeight: FontWeight.w700,
-                        color: Colors.black,
+                        color: context.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 10),
                     MyTextField(
                       controller: _emailController,
                       hint: 'Email Address',
-                      hintStyle: const TextStyle(
-                        fontFamily: 'Poppins Regular',
-                        color: Colors.black54,
-                      ),
                       obscure: false,
                     ),
                     const SizedBox(height: 8),
                     MyTextField(
                       controller: _passwordController,
                       hint: 'Password',
-                      hintStyle: const TextStyle(
-                        fontFamily: 'Poppins Regular',
-                        color: Colors.black54,
-                      ),
                       obscure: true,
                     ),
                     const SizedBox(height: 10),
                     Center(
                       child: RichText(
                         text: TextSpan(
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Poppins Regular',
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black,
+                            color: context.textPrimary,
                           ),
                           children: [
-                            const TextSpan(text: "Don't have an account? "),
+                            TextSpan(text: "Don't have an account? "),
                             TextSpan(
                               text: 'SignUp',
                               style: const TextStyle(
