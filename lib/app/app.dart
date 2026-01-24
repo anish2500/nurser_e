@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:nurser_e/features/dashboard/presentation/pages/profile_screen.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/about_screen.dart';
 
 import 'package:nurser_e/features/splash/presentation/pages/splash_screens.dart';
+
 
 import 'package:nurser_e/app/theme/theme_data.dart';
 

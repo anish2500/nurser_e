@@ -90,9 +90,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
         // Upload to server
         await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
-        
+
         // After upload, get the updated profile picture from session
-        final updatedProfileImage = ref.read(userSessionServiceProvider).getUserProfileImage();
+        final updatedProfileImage = ref
+            .read(userSessionServiceProvider)
+            .getUserProfileImage();
         if (updatedProfileImage != null && updatedProfileImage.isNotEmpty) {
           setState(() {
             _profilePictureUrl = updatedProfileImage;
@@ -128,12 +130,14 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
           _selectedMedia.add(photo);
           _selectedMediaType = 'photo';
         });
-        
+
         // Upload to server
         await ref.read(authViewModelProvider.notifier).uploadPhoto(file);
-        
+
         // After upload, get the updated profile picture from session
-        final updatedProfileImage = ref.read(userSessionServiceProvider).getUserProfileImage();
+        final updatedProfileImage = ref
+            .read(userSessionServiceProvider)
+            .getUserProfileImage();
         if (updatedProfileImage != null && updatedProfileImage.isNotEmpty) {
           setState(() {
             _profilePictureUrl = updatedProfileImage;
@@ -214,7 +218,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   void initState() {
     super.initState();
     // Load existing profile picture from session
-    _profilePictureUrl = ref.read(userSessionServiceProvider).getUserProfileImage();
+    _profilePictureUrl = ref
+        .read(userSessionServiceProvider)
+        .getUserProfileImage();
   }
 
   @override
@@ -222,9 +228,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userSession = ref.watch(userSessionServiceProvider);
     final userName = userSession.getUsername() ?? 'User';
     final userEmail = userSession.getUserEmail() ?? 'Email not available';
-    
+    final userProfile =
+        userSession.getUserProfileImage() ?? 'Photo not available';
+
     // Use _profilePictureUrl for consistency
-    final displayImage = _profilePictureUrl?.isNotEmpty == true 
+    final displayImage = _profilePictureUrl?.isNotEmpty == true
         ? 'http://192.168.18.4:5050/$_profilePictureUrl'
         : null;
 
@@ -266,9 +274,10 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           backgroundImage: _selectedMedia.isNotEmpty
                               ? FileImage(File(_selectedMedia[0].path))
                               : displayImage != null
-                                  ? NetworkImage(displayImage!)
-                                  : null,
-                          child: (_selectedMedia.isEmpty && displayImage == null)
+                              ? NetworkImage(displayImage!)
+                              : null,
+                          child:
+                              (_selectedMedia.isEmpty && displayImage == null)
                               ? Text(
                                   userName.isNotEmpty
                                       ? userName[0].toUpperCase()
