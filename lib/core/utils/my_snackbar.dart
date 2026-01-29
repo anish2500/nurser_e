@@ -30,6 +30,8 @@ void showMySnackBar({
     snackBarIcon = Icons.info_outline_rounded;
   }
 
+  ScaffoldMessenger.of(context).clearSnackBars();
+
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
       content: Row(
