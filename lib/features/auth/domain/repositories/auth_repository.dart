@@ -12,4 +12,9 @@ abstract interface class IAuthRepository {
 
   //image upload
   Future<Either<Failure, String>> uploadImage(File image);
+  Future<Either<Failure, AuthEntity?>> getUserById(String authId);
+  Future<Either<Failure, AuthEntity?>> getUserByEmail(String email);
+  Future<Either<Failure, bool>> updateUser(AuthEntity entity);
+  Future<Either<Failure, bool>> deleteUser(String authId);
+  Future<bool> isEmailExists(String email);
 }

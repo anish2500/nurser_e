@@ -13,7 +13,7 @@ import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
 import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
 import 'package:nurser_e/features/auth/domain/repositories/auth_repository.dart';
 
-// Provider for AuthRepository
+// Provider for AuthRepository 
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   final authLocalDataSource = ref.read(authLocalDatasourceProvider);
   final authRemoteDataSource = ref.read(authRemoteDatasourceProvider);
