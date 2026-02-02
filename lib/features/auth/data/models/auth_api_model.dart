@@ -1,6 +1,11 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
 
+part 'auth_api_model.g.dart';
+
+@JsonSerializable()
 class AuthApiModel {
+  @JsonKey(name: '_id')
   final String? authId;
   final String email;
   final String username;
@@ -15,27 +20,32 @@ class AuthApiModel {
     this.profilePicture,
   });
 
-  //to Json
+  factory AuthApiModel.fromJson(Map<String, dynamic> json) =>
+      _$AuthApiModelFromJson(json);
 
-  Map<String, dynamic> toJson() {
-    return {
-      "email": email,
-      "username": username,
-      "password" : password, 
-      "profilePicture": profilePicture,
-    };
-  }
+  Map<String, dynamic> toJson() => _$AuthApiModelToJson(this);
 
-  // fromJson
+  // //to Json
 
-  factory AuthApiModel.fromJson(Map<String, dynamic> json) {
-    return AuthApiModel(
-      authId: json['_id'] as String,
-      email: json['email'] as String,
-      username: json['username'] as String,
-      profilePicture: json['profilePicture'] as String?,
-    );
-  }
+  // Map<String, dynamic> toJson() {
+  //   return {
+  //     "email": email,
+  //     "username": username,
+  //     "password": password,
+  //     "profilePicture": profilePicture,
+  //   };
+  // }
+
+  // // fromJson
+
+  // factory AuthApiModel.fromJson(Map<String, dynamic> json) {
+  //   return AuthApiModel(
+  //     authId: json['_id'] as String,
+  //     email: json['email'] as String,
+  //     username: json['username'] as String,
+  //     profilePicture: json['profilePicture'] as String?,
+  //   );
+  // }
 
   //toEntity
 
