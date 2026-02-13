@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
+import 'package:nurser_e/app/app.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
@@ -345,6 +346,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
             const SizedBox(height: 30),
 
+            // --- Dark Mode Toggle Menu Item ---
+            _buildDarkModeToggle(),
+
+            const SizedBox(height: 20),
+
             // --- Logout Menu Item ---
             _buildMenuItem(
               icon: Icons.logout_rounded,
@@ -408,6 +414,71 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               Icons.arrow_forward_ios,
               size: 16,
               color: context.textSecondary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildDarkModeToggle() {
+    final isDarkMode = App.currentThemeMode == ThemeMode.dark;
+    
+    return InkWell(
+      onTap: () {
+        final newThemeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
+        App.setThemeMode(newThemeMode);
+        setState(() {});
+      },
+      borderRadius: BorderRadius.circular(12),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: context.isDarkMode ? Colors.grey[800] : lightGreen,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                isDarkMode ? Icons.dark_mode : Icons.light_mode,
+                color: primaryGreen,
+              ),
+            ),
+            const SizedBox(width: 15),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Dark Mode",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      fontFamily: fontFamily,
+                      color: context.textPrimary,
+                    ),
+                  ),
+                  Text(
+                    isDarkMode ? "Dark mode is enabled" : "Dark mode is disabled",
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: context.textSecondary,
+                      fontFamily: fontFamily,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Switch(
+              value: isDarkMode,
+              onChanged: (value) {
+                final newThemeMode = value ? ThemeMode.dark : ThemeMode.light;
+                App.setThemeMode(newThemeMode);
+                setState(() {});
+              },
+              activeColor: primaryGreen,
             ),
           ],
         ),
