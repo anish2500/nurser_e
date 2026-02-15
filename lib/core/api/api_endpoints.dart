@@ -2,7 +2,7 @@ class ApiEndpoints {
   ApiEndpoints._();
 
   // Choose based on your testing device
-  static const String _emulator = '10.0.2.2'; // Android Emulator
+  // static const String _emulator = '10.0.2.2'; // Android Emulator
   static const String _physical = '192.168.18.4'; // Update this to your IP!
 
   // Backend runs on port 5050 (from your server output)

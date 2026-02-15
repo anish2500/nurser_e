@@ -10,6 +10,7 @@ import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.d
 import 'package:nurser_e/features/auth/presentation/state/auth_state.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 
+
 class LoginScreens extends ConsumerWidget {
   const LoginScreens({super.key});
 
@@ -17,7 +18,11 @@ class LoginScreens extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authViewModelProvider);
     final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _passwordController = TextEditingController();
+    final TextEditingController _passwordController = TextEditingController(); 
+
+    
+
+    
 
     // Listen to auth state changes
     ref.listen<AuthState>(authViewModelProvider, (previous, next) {

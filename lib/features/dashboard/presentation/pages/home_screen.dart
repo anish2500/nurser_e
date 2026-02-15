@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/core/widgets/my_searchbox.dart';
-import 'package:nurser_e/core/widgets/my_textfield.dart';
 import 'package:nurser_e/core/widgets/product_card.dart';
+import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -207,119 +207,129 @@ class _HomeScreenState extends State<HomeScreen> {
 
                   const SizedBox(height: 12),
 
-                  // Top Sold Section
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0, bottom: 12.0),
-                    child: Text(
-                      "Top Sold",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: 25.0),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        final topSoldProducts = [
-                          {
-                            'title': 'Snake Plant',
-                            'price': 'Rs800',
-                            'category': 'Indoor',
-                            'image': 'assets/images/snake.jpg'
-                          },
-                          {
-                            'title': 'Rose',
-                            'price': 'Rs500',
-                            'category': 'Outdoor',
-                            'image': 'assets/images/rose.jpg'
-                          },
-                          {
-                            'title': 'Bay Leaf',
-                            'price': 'Rs700',
-                            'category': 'Fruits & Herbs',
-                            'image': 'assets/images/bayleaf.jpg'
-                          },
-                          {
-                            'title': 'Marigold',
-                            'price': 'Rs200',
-                            'category': 'Seasonal',
-                            'image': 'assets/images/marigold.jpg'
-                          },
-                        ];
-                        return ProductCard(
-                          title: topSoldProducts[index]['title']!,
-                          price: topSoldProducts[index]['price']!,
-                          categories: topSoldProducts[index]['category']!,
-                          imagePath: topSoldProducts[index]['image']!,
-                          onTap: () {},
-                        );
-                      },
-                    ),
-                  ),
+                  // Indoor Section
+                 // Indoor Section
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+  child: Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      "Indoor",
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: context.isDarkMode ? Colors.white : Colors.black,
+      ),
+    ),
+  ),
+),
+const SizedBox(height: 12),
+SizedBox(
+  height: 200,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+    itemCount: 4,
+    itemBuilder: (context, index) {
+      final topSoldProducts = [
+        {
+          'title': 'Snake Plant',
+          'price': 'Rs800',
+          'category': 'Indoor',
+          'image': 'assets/images/snake.jpg'
+        },
+        {
+          'title': 'Rose',
+          'price': 'Rs500',
+          'category': 'Indoor',
+          'image': 'assets/images/rose.jpg'
+        },
+        {
+          'title': 'Bay Leaf',
+          'price': 'Rs700',
+          'category': 'Indoor',
+          'image': 'assets/images/bayleaf.jpg'
+        },
+        {
+          'title': 'Marigold',
+          'price': 'Rs200',
+          'category': 'Indoor',
+          'image': 'assets/images/marigold.jpg'
+        },
+      ];
+      return ProductCard(
+        title: topSoldProducts[index]['title']!,
+        price: topSoldProducts[index]['price']!,
+        categories: topSoldProducts[index]['category']!,
+        imagePath: topSoldProducts[index]['image']!,
+        onTap: () {},
+      );
+    },
+  ),
+),
+
 
                   const SizedBox(height: 24.0),
 
-                  // Recent Arrivals Section
-                  Padding(
-                    padding: const EdgeInsets.only(left: 25.0, bottom: 12.0),
-                    child: Text(
-                      "Recent Arrivals",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 200,
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      padding: EdgeInsets.symmetric(horizontal: 25.0),
-                      itemCount: 4,
-                      itemBuilder: (context, index) {
-                        final recentArrivalsProducts = [
-                          {
-                            'title': 'Peace Lily',
-                            'price': 'Rs1200',
-                            'category': 'Indoor',
-                            'image': 'assets/images/peacelily.jpg'
-                          },
-                          {
-                            'title': 'Jasmine',
-                            'price': 'Rs600',
-                            'category': 'Outdoor',
-                            'image': 'assets/images/jasmine.jpg'
-                          },
-                          {
-                            'title': 'Lemon Plant',
-                            'price': 'Rs1200',
-                            'category': 'Fruits & Herbs',
-                            'image': 'assets/images/lemon.jpg'
-                          },
-                          {
-                            'title': 'Lotus',
-                            'price': 'Rs1000',
-                            'category': 'Seasonal',
-                            'image': 'assets/images/lily.jpg'
-                          },
-                        ];
-                        return ProductCard(
-                          title: recentArrivalsProducts[index]['title']!,
-                          price: recentArrivalsProducts[index]['price']!,
-                          categories: recentArrivalsProducts[index]['category']!,
-                          imagePath: recentArrivalsProducts[index]['image']!,
-                          onTap: () {},
-                        );
-                      },
-                    ),
-                  ),
+                 // Outdoor Section
+Padding(
+  padding: const EdgeInsets.symmetric(horizontal: 25.0),
+  child: Align(
+    alignment: Alignment.centerLeft,
+    child: Text(
+      "Outdoor",
+      style: TextStyle(
+        fontSize: 20,
+        fontWeight: FontWeight.w800,
+        color: context.isDarkMode ? Colors.white : Colors.black,
+      ),
+    ),
+  ),
+),
+const SizedBox(height: 12),
+SizedBox(
+  height: 200,
+  child: ListView.builder(
+    scrollDirection: Axis.horizontal,
+    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+    itemCount: 4,
+    itemBuilder: (context, index) {
+      final recentArrivalsProducts = [
+        {
+          'title': 'Peace Lily',
+          'price': 'Rs1200',
+          'category': 'Outdoor',
+          'image': 'assets/images/peacelily.jpg'
+        },
+        {
+          'title': 'Jasmine',
+          'price': 'Rs600',
+          'category': 'Outdoor',
+          'image': 'assets/images/jasmine.jpg'
+        },
+        {
+          'title': 'Lemon Plant',
+          'price': 'Rs1200',
+          'category': 'Outdoor',
+          'image': 'assets/images/lemon.jpg'
+        },
+        {
+          'title': 'Lotus',
+          'price': 'Rs1000',
+          'category': 'Outdoor',
+          'image': 'assets/images/lily.jpg'
+        },
+      ];
+      return ProductCard(
+        title: recentArrivalsProducts[index]['title']!,
+        price: recentArrivalsProducts[index]['price']!,
+        categories: recentArrivalsProducts[index]['category']!,
+        imagePath: recentArrivalsProducts[index]['image']!,
+        onTap: () {},
+      );
+    },
+  ),
+),
 
                   const SizedBox(height: 20.0),
                 ],

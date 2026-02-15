@@ -8,10 +8,16 @@
     <uses-permission android:name = "android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name = "android.permission.READ_MEDIA_VIDEO"/>
     <uses-permission android:name = "android.permission.RECORD_AUDIO"/>
+    <uses-permission android:name="android.permission.USE_BIOMETRIC"/>
+    <uses-permission android:name="android.permission.USE_FINGERPRINT"/>
+
     <application
         android:label="nurserE"
         android:name="${applicationName}"
+        android:usesCleartextTraffic="true"
         android:icon="@mipmap/launcher_icon">
+        
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
