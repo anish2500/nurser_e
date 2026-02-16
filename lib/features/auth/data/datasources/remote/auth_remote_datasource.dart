@@ -7,7 +7,9 @@ import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/services/storage/token_service.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/features/auth/data/datasources/auth_datasource.dart';
+import 'package:nurser_e/features/auth/data/datasources/local/auth_local_datasource.dart';
 import 'package:nurser_e/features/auth/data/models/auth_api_model.dart';
+import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
 import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
 import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 
@@ -16,6 +18,7 @@ final authRemoteDatasourceProvider = Provider<IAuthRemoteDataSource>((ref) {
     apiClient: ref.read(apiClientProvider),
     userSessionService: ref.read(userSessionServiceProvider),
     tokenService: ref.read(tokenServiceProvider),
+    authLocalDatasource: ref.read(authLocalDatasourceProvider)
   );
 });
 
@@ -23,14 +26,17 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
   final ApiClient _apiClient;
   final UserSessionService _userSessionService;
   final TokenService _tokenService;
+  final AuthLocalDatasource _authLocalDatasource;
 
   AuthRemoteDatasource({
     required ApiClient apiClient,
     required UserSessionService userSessionService,
     required TokenService tokenService,
+    required AuthLocalDatasource authLocalDatasource,
   }) : _apiClient = apiClient,
        _userSessionService = userSessionService,
-       _tokenService = tokenService;
+       _tokenService = tokenService,
+       _authLocalDatasource = authLocalDatasource;
 
   @override
   Future<AuthApiModel?> login(String email, String password) async {
@@ -54,8 +60,20 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
       final token = response.data['token'] as String?;
       await _tokenService.saveToken(token!);
 
+      // Save to local Hive for offline login
+      await _authLocalDatasource.register(
+        AuthHiveModel(
+          authId: user.authId,
+          email: user.email,
+          username: user.username,
+          password: password,
+          profilePicture: user.profilePicture,
+        ),
+      );
+
       return user;
     }
+    
 
     return null;
   }

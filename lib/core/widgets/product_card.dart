@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 class ProductCard extends StatelessWidget {
   final String title;
   final String price;
-  final String categories; 
+  final String categories;
   final String? imagePath;
   final double width;
   final double height;
   final VoidCallback? onTap;
+  final bool isNetworkImage;
 
   const ProductCard({
     super.key,
@@ -16,8 +17,9 @@ class ProductCard extends StatelessWidget {
     required this.categories,
     this.imagePath,
     this.width = 170,
-    this.height = 220,
+    this.height = 190,
     this.onTap,
+    this.isNetworkImage = false,
   });
 
   @override
@@ -49,17 +51,47 @@ class ProductCard extends StatelessWidget {
                           borderRadius: BorderRadius.vertical(
                             top: Radius.circular(8),
                           ),
-                          child: Image.asset(
-                            imagePath!,
-                            fit: BoxFit.cover,
-                            errorBuilder: (context, error, stackTrace) {
-                              return Icon(
-                                Icons.image,
-                                size: 40,
-                                color: Colors.grey[600],
-                              );
-                            },
-                          ),
+                          child: isNetworkImage
+                              ? Image.network(
+                                  imagePath!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.image,
+                                      size: 40,
+                                      color: Colors.grey[600],
+                                    );
+                                  },
+                                  loadingBuilder:
+                                      (context, child, loadingProgress) {
+                                        if (loadingProgress == null)
+                                          return child;
+                                        return Center(
+                                          child: CircularProgressIndicator(
+                                            value:
+                                                loadingProgress
+                                                        .expectedTotalBytes !=
+                                                    null
+                                                ? loadingProgress
+                                                          .cumulativeBytesLoaded /
+                                                      loadingProgress
+                                                          .expectedTotalBytes!
+                                                : null,
+                                          ),
+                                        );
+                                      },
+                                )
+                              : Image.asset(
+                                  imagePath!,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Icon(
+                                      Icons.image,
+                                      size: 40,
+                                      color: Colors.grey[600],
+                                    );
+                                  },
+                                ),
                         )
                       : Icon(Icons.image, size: 40, color: Colors.grey[600]),
                 ),
@@ -75,14 +107,17 @@ class ProductCard extends StatelessWidget {
                         title,
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 13,
+                          fontSize: 11,
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
-                      SizedBox(height: 2),
+                      SizedBox(height: 6),
                       Container(
-                        padding: EdgeInsets.symmetric(horizontal: 4, vertical: 1),
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 4,
+                          vertical: 1,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.green.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(3),
@@ -96,13 +131,13 @@ class ProductCard extends StatelessWidget {
                           ),
                         ),
                       ),
-                      SizedBox(height: 3),
+                      SizedBox(height: 6),
                       Text(
                         price,
                         style: TextStyle(
                           color: Colors.green,
                           fontWeight: FontWeight.w600,
-                          fontSize: 12,
+                          fontSize: 10,
                         ),
                       ),
                     ],
