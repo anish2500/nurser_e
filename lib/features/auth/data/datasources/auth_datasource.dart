@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:nurser_e/features/auth/data/models/auth_api_model.dart';
 import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
+import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
+import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 
 abstract interface class IAuthLocalDataSource {
   Future<AuthHiveModel> register(AuthHiveModel model);
@@ -17,6 +19,9 @@ abstract interface class IAuthLocalDataSource {
 
   // Email check
   Future<bool> isEmailExists(String email);
+
+  // Update profile picture
+  Future<bool> updateProfilePicture(String userId, String profileImage);
 }
 
 abstract interface class IAuthRemoteDataSource {
@@ -24,4 +29,5 @@ abstract interface class IAuthRemoteDataSource {
   Future<AuthApiModel?> login(String email, String password);
   Future<AuthApiModel?> getUserById(String authId);
   Future<String> uploadImage(File image);
+  Future<AuthEntity> updateProfile(UpdateProfileParams params);
 }
