@@ -95,6 +95,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       width: 44,
                       height: 44,
                       decoration: BoxDecoration(
+                        // ignore: deprecated_member_use
                         color: primaryGreen.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),

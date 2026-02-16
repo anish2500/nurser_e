@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nurser_e/app/app.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/display_screens.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 
@@ -42,8 +43,10 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
 
   @override
   Widget build(BuildContext context) {
+    final isDarkMode = App.currentThemeMode == ThemeMode.dark;
+    
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
@@ -67,7 +70,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                             TextSpan(
                               text: 'nurser',
                               style: TextStyle(
-                                color: Colors.grey,
+                                color: isDarkMode ? Colors.white70 : Colors.grey,
                                 fontSize:
                                     MediaQuery.of(context).size.width >= 768
                                     ? 64
@@ -119,7 +122,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                         : 20,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: isDarkMode ? Colors.grey[900] : Colors.grey[50],
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(30),
                       topRight: Radius.circular(30),
@@ -161,7 +164,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                                   : 100,
                               child: MyButton(
                                 text: 'Back',
-                                backgroundColor: Colors.grey[300],
+                                backgroundColor: isDarkMode ? Colors.grey[700] : Colors.grey[300],
                                 height: MediaQuery.of(context).size.width >= 768
                                     ? 48
                                     : 44,
@@ -171,7 +174,7 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
                                     curve: Curves.easeInOut,
                                   );
                                 },
-                                textColor: Colors.black,
+                                textColor: isDarkMode ? Colors.white : Colors.black,
                                 fontSize:
                                     MediaQuery.of(context).size.width >= 768
                                     ? 18
@@ -260,7 +263,7 @@ class OnboardingPage extends StatelessWidget {
                     constraints.maxHeight *
                     (MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.5),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: App.currentThemeMode == ThemeMode.dark ? Colors.grey[800] : Colors.grey[100],
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: ClipRRect(
@@ -285,7 +288,7 @@ class OnboardingPage extends StatelessWidget {
                 style: TextStyle(
                   fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
                   fontWeight: FontWeight.w700,
-                  color: Colors.black,
+                  color: App.currentThemeMode == ThemeMode.dark ? Colors.white : Colors.black,
                   fontFamily: 'Poppins',
                 ),
                 textAlign: TextAlign.center,
@@ -307,7 +310,7 @@ class OnboardingPage extends StatelessWidget {
                         ? 18
                         : 16,
                     fontWeight: FontWeight.w400,
-                    color: Colors.grey[600],
+                    color: App.currentThemeMode == ThemeMode.dark ? Colors.white70 : Colors.grey[600],
                     fontFamily: 'Poppins',
                   ),
                   textAlign: TextAlign.center,
