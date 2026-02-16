@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:hive/hive.dart';
 import 'package:nurser_e/core/constants/hive_table_constant.dart';
 import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
+import 'package:nurser_e/features/plants/data/models/plant_hive_model.dart';
 import 'package:path_provider/path_provider.dart';
 
 final hiveServiceProvider = Provider<HiveService>((ref) {
@@ -17,7 +18,7 @@ class HiveService {
 
     // Register Adapters
     _registerAdapter();
-    
+
     // Open necessary boxes
     await _openBoxes();
   }
@@ -28,16 +29,23 @@ class HiveService {
       Hive.registerAdapter(AuthHiveModelAdapter());
     }
     // Add additional adapters here as you create more features
+    if (!Hive.isAdapterRegistered(HiveTableConstant.plantTypeId)) {
+      Hive.registerAdapter(PlantHiveModelAdapter());
+    }
   }
 
   // Open Boxes
   Future<void> _openBoxes() async {
     await Hive.openBox<AuthHiveModel>(HiveTableConstant.authTable);
+    await Hive.openBox<PlantHiveModel>(HiveTableConstant.plantTable);
   }
 
   // Helper getter for Auth Box
   Box<AuthHiveModel> get _authBox =>
       Hive.box<AuthHiveModel>(HiveTableConstant.authTable);
+
+  Box<PlantHiveModel> get _plantBox =>
+      Hive.box<PlantHiveModel>(HiveTableConstant.plantTable);
 
   // ======================== AUTH QUERIES ========================== //
 
@@ -99,5 +107,19 @@ class HiveService {
   // Box close
   Future<void> close() async {
     await Hive.close();
+  }
+
+  Future<void> cachePlants(List<PlantHiveModel> plants) async {
+    for (var plant in plants) {
+      await _plantBox.put(plant.id, plant);
+    }
+  }
+
+  List<PlantHiveModel> getCachePlants() {
+    return _plantBox.values.toList();
+  }
+
+  Future<void> clearPlants() async {
+    await _plantBox.clear();
   }
 }

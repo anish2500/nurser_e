@@ -3,29 +3,22 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/product_card.dart';
-import 'package:nurser_e/features/plants/data/datasources/remote/plant_remote_datasource.dart';
 import 'package:nurser_e/features/plants/data/models/plant_api_model.dart';
+import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
+import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 
-final indoorPlantsProvider = FutureProvider.autoDispose<List<PlantApiModel>>((
-  ref,
-) async {
-  final datasource = ref.read(plantRemoteDatasourceProvider);
-  return await datasource.getAllPlants(category: 'INDOOR');
+final indoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((ref) async {
+  final repository = ref.read(plantRepositoryProvider);  // <-- Use repository instead
+  return await repository.getAllPlants(category: 'INDOOR');
 });
-
-final outdoorPlantsProvider = FutureProvider.autoDispose<List<PlantApiModel>>((
-  ref,
-) async {
-  final datasource = ref.read(plantRemoteDatasourceProvider);
-  return await datasource.getAllPlants(category: 'OUTDOOR');
+final outdoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((ref) async {
+  final repository = ref.read(plantRepositoryProvider);
+  return await repository.getAllPlants(category: 'OUTDOOR');
 });
-
-final floweringPlantsProvider = FutureProvider.autoDispose<List<PlantApiModel>>(
-  (ref) async {
-    final datasource = ref.read(plantRemoteDatasourceProvider);
-    return await datasource.getAllPlants(category: 'FLOWERING');
-  },
-);
+final floweringPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((ref) async {
+  final repository = ref.read(plantRepositoryProvider);
+  return await repository.getAllPlants(category: 'FLOWERING');
+});
 
 class CategoriesScreen extends StatelessWidget {
   const CategoriesScreen({super.key});
@@ -66,7 +59,7 @@ class CategoriesScreen extends StatelessWidget {
   Widget _buildCategorySection({
     required BuildContext context,
     required String title,
-    required FutureProvider<List<PlantApiModel>> categoryProvider,
+    required FutureProvider<List<PlantEntity>> categoryProvider,
   }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

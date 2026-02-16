@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
   throw UnimplementedError("Shared prefs implementation in the main ");
 });
@@ -22,15 +21,16 @@ class UserSessionService {
   static const String _keyUsername = 'username';
   static const String _keyUserProfileImage = 'user_profile_image';
 
+
   //store user session data
   Future<void> saveUserSession({
     required String userId,
     required String email,
     required String username,
-    // required String? userProfile,
 
-  
+    // required String? userProfile,
     String? profileImage,
+    String? localProfileImagePath,
   }) async {
     await _prefs.setBool(_keyIsLoggedIn, true);
     await _prefs.setString(_keyUserId, userId);
@@ -39,17 +39,17 @@ class UserSessionService {
     if (profileImage != null) {
       await _prefs.setString(_keyUserProfileImage, profileImage);
     }
+  
   }
 
   //clear user session
-
   Future<void> clearUserSession() async {
-
     await _prefs.remove(_keyUserEmail);
     await _prefs.remove(_keyUsername);
     await _prefs.remove(_keyUserId);
     await _prefs.remove(_keyIsLoggedIn);
     await _prefs.remove(_keyUserProfileImage);
+    
   }
 
   //check if logged in
@@ -64,13 +64,13 @@ class UserSessionService {
   String? getUserEmail() {
     return _prefs.getString(_keyUserEmail);
   }
-   String? getUsername() {
+
+  String? getUsername() {
     return _prefs.getString(_keyUsername);
   }
-
 
   String? getUserProfileImage() {
     return _prefs.getString(_keyUserProfileImage);
   }
-  
+
 }
