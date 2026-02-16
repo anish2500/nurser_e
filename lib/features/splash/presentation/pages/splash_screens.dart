@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart'; // Added Riverpod import
+import 'package:nurser_e/app/app.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/bottom_navigation_layout.dart';
@@ -37,20 +38,24 @@ class _SplashScreensState extends ConsumerState<SplashScreens> {
         context,
         MaterialPageRoute(builder: (context) => const BottomNavigationLayout()),
       );
-    }else {
+    } else {
       Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => const OnboardingScreens()),
-    );
+        context,
+        MaterialPageRoute(builder: (context) => const OnboardingScreens()),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: context.backgroundColor,
+      backgroundColor: App.currentThemeMode == ThemeMode.dark
+          ? Colors.black
+          : Colors.white,
       appBar: AppBar(
-        backgroundColor: context.backgroundColor,
+        backgroundColor: App.currentThemeMode == ThemeMode.dark
+            ? Colors.black
+            : Colors.white,
         elevation: 0, // Cleaned up shadow for splash feel
       ),
       body: SafeArea(
@@ -82,7 +87,9 @@ class _SplashScreensState extends ConsumerState<SplashScreens> {
                     TextSpan(
                       text: 'nurser',
                       style: TextStyle(
-                        color: context.textSecondary,
+                        color: App.currentThemeMode == ThemeMode.dark
+                            ? Colors.white
+                            : Colors.grey,
                         fontWeight: FontWeight.w700,
                         fontSize: MediaQuery.of(context).size.width >= 768
                             ? 64
