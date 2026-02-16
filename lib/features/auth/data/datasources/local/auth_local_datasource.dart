@@ -127,4 +127,25 @@ class AuthLocalDatasource implements IAuthLocalDataSource {
       return false;
     }
   }
+
+  @override
+  Future<bool> updateProfilePicture(String userId, String profileImage) async {
+    try {
+      final user = await _hiveService.getUserById(userId);
+      if (user != null) {
+        final updatedUser = AuthHiveModel(
+          authId: user.authId,
+          email: user.email,
+          username: user.username,
+          password: user.password,
+          profilePicture: profileImage,
+        );
+        await _hiveService.updateUser(updatedUser);
+        return true;
+      }
+      return false;
+    } catch (e) {
+      return false;
+    }
+  }
 }

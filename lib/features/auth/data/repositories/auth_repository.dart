@@ -12,6 +12,7 @@ import 'package:nurser_e/features/auth/data/models/auth_api_model.dart'; // Ensu
 import 'package:nurser_e/features/auth/data/models/auth_hive_model.dart';
 import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
 import 'package:nurser_e/features/auth/domain/repositories/auth_repository.dart';
+import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 
 // Provider for AuthRepository 
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
@@ -202,4 +203,18 @@ class AuthRepository implements IAuthRepository {
       return Left(ApiFailure(message: 'No internet connection'));
     }
   }
+
+  @override
+Future<Either<Failure, AuthEntity>> updateProfile(UpdateProfileParams params) async {
+  if (await _networkInfo.isConnected) {
+    try {
+      final result = await _authRemoteDataSource.updateProfile(params);
+      return Right(result);
+    } catch (e) {
+      return Left(ApiFailure(message: e.toString()));
+    }
+  } else {
+    return Left(ApiFailure(message: 'No internet connection'));
+  }
+}
 }

@@ -8,6 +8,7 @@ import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/profile_edit_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
@@ -339,7 +340,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                       ],
                     ),
                   ),
-                  const Icon(Icons.edit_outlined, color: Colors.white),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const ProfileEditScreen()),
+                      );
+                    },
+                    child: const Icon(Icons.edit_outlined, color: Colors.white),
+                  ),
                 ],
               ),
             ),

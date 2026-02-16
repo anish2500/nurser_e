@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:dartz/dartz.dart';
 import 'package:nurser_e/core/error/failures.dart';
 import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
+import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 
 abstract interface class IAuthRepository {
   Future<Either<Failure, bool>> register(AuthEntity entity);
@@ -16,5 +17,6 @@ abstract interface class IAuthRepository {
   Future<Either<Failure, AuthEntity?>> getUserByEmail(String email);
   Future<Either<Failure, bool>> updateUser(AuthEntity entity);
   Future<Either<Failure, bool>> deleteUser(String authId);
+  Future<Either<Failure, AuthEntity>> updateProfile(UpdateProfileParams params);
   Future<bool> isEmailExists(String email);
 }

@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nurser_e/core/services/storage/user_session_service.dart';
+import 'package:nurser_e/features/auth/data/datasources/local/auth_local_datasource.dart';
 import 'package:nurser_e/features/auth/domain/usecases/get_current_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/login_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/register_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/logout_usecase.dart'; // Add this
+import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/upload_photo_usecase.dart';
 import 'package:nurser_e/features/auth/presentation/state/auth_state.dart';
 
@@ -19,6 +22,7 @@ class AuthViewModel extends Notifier<AuthState> {
   late final LogoutUsecase _logoutUsecase;
   late final GetCurrentUserUsecase _getCurrentUserUsecase;
   late final UploadPhotoUsecase _uploadPhotoUsecase;
+  late final UpdateProfileUsecase _updateProfileUsecase;
 
   @override
   AuthState build() {
@@ -28,6 +32,8 @@ class AuthViewModel extends Notifier<AuthState> {
     _logoutUsecase = ref.read(logoutUsecaseProvider);
     _getCurrentUserUsecase = ref.read(getCurrentUserUsecaseProvider);
     _uploadPhotoUsecase = ref.read(uploadPhotoUsecaseProvider);
+    _updateProfileUsecase = ref.read(updateProfileUsecaseProvider);
+    
 
     return AuthState.initial();
   }
@@ -126,10 +132,65 @@ class AuthViewModel extends Notifier<AuthState> {
           errorMessage: failure.message,
         );
       },
-      (imageName) {
+      (imageName) async {
+        final userId = ref.read(userSessionServiceProvider).getUserId() ?? '';
+
+        // 🔥 Update profile picture in local datasource
+        await ref
+            .read(authLocalDatasourceProvider)
+            .updateProfilePicture(userId, imageName);
+        ref
+            .read(userSessionServiceProvider)
+            .saveUserSession(
+              userId: ref.read(userSessionServiceProvider).getUserId() ?? '',
+              email: ref.read(userSessionServiceProvider).getUserEmail() ?? '',
+              username:
+                  ref.read(userSessionServiceProvider).getUsername() ?? '',
+              profileImage: imageName,
+            );
         state = state.copyWith(
           status: AuthStatus.loaded,
           uploadPhotoName: imageName,
+        );
+      },
+    );
+  }
+
+  /// Update Profile
+  Future<void> updateProfile({
+    String? fullName,
+    String? username,
+    String? email,
+    File? profilePicture,
+  }) async {
+    state = state.copyWith(status: AuthStatus.loading);
+
+    final params = UpdateProfileParams(
+      fullName: fullName,
+      username: username,
+      email: email,
+      profilePicture: profilePicture,
+    );
+
+    final result = await _updateProfileUsecase(params);
+
+    result.fold(
+      (failure) => state = state.copyWith(
+        status: AuthStatus.error,
+        errorMessage: failure.message,
+      ),
+      (user) {
+        // Update local storage with new user data
+        ref.read(userSessionServiceProvider).saveUserSession(
+          userId: user.authId ?? '',
+          email: user.email,
+          username: user.username,
+          profileImage: user.profilePicture ?? '',
+        );
+        
+        state = state.copyWith(
+          status: AuthStatus.authenticated,
+          authEntity: user,
         );
       },
     );
@@ -144,3 +205,4 @@ class AuthViewModel extends Notifier<AuthState> {
     state = state.copyWith(errorMessage: null);
   }
 }
+
