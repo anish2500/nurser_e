@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   const SizedBox(height: 6),
 
-                  const my_searchbox(), 
+                  const MySearchbox(), 
                   const SizedBox(height: 12),
 
                   // New Arrivals Card

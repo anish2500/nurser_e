@@ -17,8 +17,8 @@ class LoginScreens extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authViewModelProvider);
-    final TextEditingController _emailController = TextEditingController();
-    final TextEditingController _passwordController = TextEditingController(); 
+    final TextEditingController emailController = TextEditingController();
+    final TextEditingController passwordController = TextEditingController(); 
 
     
 
@@ -45,9 +45,9 @@ class LoginScreens extends ConsumerWidget {
       }
     });
 
-    void _handleLogin() {
-      final email = _emailController.text.trim();
-      final password = _passwordController.text.trim();
+    void handleLogin() {
+      final email = emailController.text.trim();
+      final password = passwordController.text.trim();
 
       if (email.isEmpty || password.isEmpty) {
         showMySnackBar(
@@ -104,7 +104,7 @@ class LoginScreens extends ConsumerWidget {
                             borderRadius: BorderRadius.circular(25),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 blurRadius: 15,
                                 offset: const Offset(0, 8),
                               ),
@@ -189,13 +189,13 @@ class LoginScreens extends ConsumerWidget {
                     ),
                     const SizedBox(height: 10),
                     MyTextField(
-                      controller: _emailController,
+                      controller: emailController,
                       hint: 'Email Address',
                       obscure: false,
                     ),
                     const SizedBox(height: 8),
                     MyTextField(
-                      controller: _passwordController,
+                      controller: passwordController,
                       hint: 'Password',
                       obscure: true,
                     ),
@@ -245,7 +245,7 @@ class LoginScreens extends ConsumerWidget {
                       ),
                       onPressed: authState.status == AuthStatus.loading
                           ? () {}
-                          : _handleLogin,
+                          : handleLogin,
                     ),
                     const SizedBox(height: 20),
                   ],

@@ -10,7 +10,6 @@ import 'package:nurser_e/features/auth/domain/usecases/get_current_usecase.dart'
 import 'package:nurser_e/features/auth/domain/usecases/login_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/register_usecase.dart';
-import 'package:nurser_e/features/auth/domain/usecases/upload_photo_usecase.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/pages/signup_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';

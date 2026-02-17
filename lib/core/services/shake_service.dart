@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:math';
+import 'package:flutter/foundation.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 final shakeServiceProvider = Provider<ShakeService>((ref) {
@@ -28,7 +29,7 @@ class ShakeService {
         if (_lastShakeTime == null ||
             now.difference(_lastShakeTime!).inMilliseconds > _shakeCooldownMs) {
           _lastShakeTime = now;
-          print('Shake detected! Acceleration: $netAcceleration');
+          debugPrint('Shake detected! Acceleration: $netAcceleration');
           onShakeDetected();
         }
       }

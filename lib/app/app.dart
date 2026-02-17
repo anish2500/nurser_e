@@ -47,7 +47,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
 
   void _startShakeListener() {
     _shakeService.startListening(() {
-      print('Shake detected - triggering logout');
+      debugPrint('Shake detected - triggering logout');
       if (!_shakeTriggered) {
         _shakeTriggered = true;
         _handleShakeLogout();

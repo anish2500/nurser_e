@@ -57,7 +57,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       child: Icon(
                         Icons.eco_outlined,
                         size: 48,
-                        color: primaryGreen.withOpacity(0.6),
+                        color: primaryGreen.withValues(alpha: 0.6),
                       ),
                     ),
                   ),
@@ -87,7 +87,9 @@ class _AboutScreenState extends State<AboutScreen> {
                 decoration: BoxDecoration(
                   color: context.surfaceColor,
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: primaryGreen.withOpacity(0.2)),
+                  border: Border.all(
+                    color: primaryGreen.withValues(alpha: 0.2),
+                  ),
                 ),
                 child: Row(
                   children: [
@@ -96,7 +98,7 @@ class _AboutScreenState extends State<AboutScreen> {
                       height: 44,
                       decoration: BoxDecoration(
                         // ignore: deprecated_member_use
-                        color: primaryGreen.withOpacity(0.1),
+                        color: primaryGreen.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Icon(Icons.local_florist, color: primaryGreen),

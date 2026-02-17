@@ -8,7 +8,6 @@ import 'package:nurser_e/features/auth/domain/usecases/login_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/register_usecase.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
-import 'package:nurser_e/features/auth/presentation/pages/signup_screens.dart';
 import 'package:nurser_e/core/widgets/my_textfield.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
