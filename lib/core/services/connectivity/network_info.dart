@@ -22,9 +22,8 @@ class NetworkInfo implements INetworkInfo {
     if (result.contains(ConnectivityResult.none)) {
       return false;
     }
-    // return await _isInternetReallyAvailable();
+    return await _isInternetReallyAvailable();
 
-    return true;
   }
 
   Future<bool> _isInternetReallyAvailable() async {

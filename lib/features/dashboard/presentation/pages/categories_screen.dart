@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/product_card.dart';
-import 'package:nurser_e/features/plants/data/models/plant_api_model.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 
@@ -99,7 +98,7 @@ class CategoriesScreen extends StatelessWidget {
                     itemCount: plants.length,
                     itemBuilder: (context, index) {
                       final plant = plants[index];
-                      String _getFullImageUrl(String? imagePath) {
+                      String getFullImageUrl(String? imagePath) {
                         if (imagePath == null || imagePath.isEmpty) return '';
                         if (imagePath.startsWith('http')) return imagePath;
                         return '${ApiEndpoints.imageBaseUrl}/plant_images/$imagePath';
@@ -110,7 +109,7 @@ class CategoriesScreen extends StatelessWidget {
                         price: 'Rs ${plant.price.toStringAsFixed(2)}',
                         categories: plant.category,
                         imagePath: plant.plantImages.isNotEmpty
-                            ? _getFullImageUrl(plant.plantImages.first)
+                            ? getFullImageUrl(plant.plantImages.first)
                             : null,
                         isNetworkImage: true,
                         onTap: () {

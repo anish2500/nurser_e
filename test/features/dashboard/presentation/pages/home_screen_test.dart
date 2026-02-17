@@ -25,7 +25,7 @@ void main() {
       expect(find.text('Recent Arrivals'), findsOneWidget);
 
       // Verify search box is present
-      expect(find.byType(my_searchbox), findsOneWidget);
+      expect(find.byType(MySearchbox), findsOneWidget);
 
       // Verify Shop Now button exists
       expect(find.byType(MyButton), findsOneWidget);

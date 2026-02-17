@@ -80,10 +80,10 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
           context: context,
           message: 'SignUp successful! Please login to continue.',
         );
+        final navigator = Navigator.of(context);
         Future.delayed(const Duration(seconds: 2), () {
           if (mounted) {
-            Navigator.pushReplacement(
-              context,
+            navigator.pushReplacement(
               MaterialPageRoute(builder: (_) => const LoginScreens()),
             );
           }
@@ -135,7 +135,7 @@ class _SignupScreensState extends ConsumerState<SignupScreens> {
                             borderRadius: BorderRadius.circular(25),
                             boxShadow: [
                               BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
+                                color: Colors.black.withValues(alpha: 0.3),
                                 blurRadius: 15,
                                 offset: const Offset(0, 8),
                               ),

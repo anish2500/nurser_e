@@ -96,7 +96,6 @@ class AuthRemoteDatasource implements IAuthRemoteDataSource {
 
   @override
   Future<AuthApiModel?> getUserById(String authId) {
-    // TODO: implement getUserById
     throw UnimplementedError();
   }
 

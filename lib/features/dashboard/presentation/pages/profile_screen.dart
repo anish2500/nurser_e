@@ -27,7 +27,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
   // Media state
   final List<XFile> _selectedMedia = [];
   final ImagePicker _imagePicker = ImagePicker();
-  String? _selectedMediaType;
+  // String? _selectedMediaType;
   String? _profilePictureUrl; // Add this back
 
   //Permission handling
@@ -88,7 +88,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         setState(() {
           _selectedMedia.clear();
           _selectedMedia.add(image);
-          _selectedMediaType = 'photo';
+          // _selectedMediaType = 'photo';
         });
 
         // Upload to server
@@ -131,7 +131,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         setState(() {
           _selectedMedia.clear();
           _selectedMedia.add(photo);
-          _selectedMediaType = 'photo';
+          // _selectedMediaType = 'photo';
         });
 
         // Upload to server
@@ -159,15 +159,15 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  void _handleSelectedMedia(XFile file, String type) {
-    setState(() {
-      _selectedMedia.clear();
-      _selectedMedia.add(file);
-      _selectedMediaType = type;
-    });
-    // Optional: Trigger upload to server here via ViewModel
-    // ref.read(authViewModelProvider.notifier).uploadProfileImage(file.path);
-  }
+  // void _handleSelectedMedia(XFile file, String type) {
+  //   setState(() {
+  //     _selectedMedia.clear();
+  //     _selectedMedia.add(file);
+  //     _selectedMediaType = type;
+  //   });
+  //   // Optional: Trigger upload to server here via ViewModel
+  //   // ref.read(authViewModelProvider.notifier).uploadProfileImage(file.path);
+  // }
 
   Future<void> _pickMedia() async {
     showModalBottomSheet(
@@ -231,8 +231,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userSession = ref.watch(userSessionServiceProvider);
     final userName = userSession.getUsername() ?? 'User';
     final userEmail = userSession.getUserEmail() ?? 'Email not available';
-    final userProfile =
-        userSession.getUserProfileImage() ?? 'Photo not available';
+    
 
     // Use _profilePictureUrl for consistency
     final displayImage = _profilePictureUrl?.isNotEmpty == true
@@ -277,7 +276,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                           backgroundImage: _selectedMedia.isNotEmpty
                               ? FileImage(File(_selectedMedia[0].path))
                               : displayImage != null
-                              ? NetworkImage(displayImage!)
+                              ? NetworkImage(displayImage)
                               : null,
                           child:
                               (_selectedMedia.isEmpty && displayImage == null)
@@ -344,7 +343,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const ProfileEditScreen()),
+                        MaterialPageRoute(
+                          builder: (context) => const ProfileEditScreen(),
+                        ),
                       );
                     },
                     child: const Icon(Icons.edit_outlined, color: Colors.white),
@@ -432,7 +433,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
   Widget _buildDarkModeToggle() {
     final isDarkMode = App.currentThemeMode == ThemeMode.dark;
-    
+
     return InkWell(
       onTap: () {
         final newThemeMode = isDarkMode ? ThemeMode.light : ThemeMode.dark;
@@ -470,7 +471,9 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                     ),
                   ),
                   Text(
-                    isDarkMode ? "Dark mode is enabled" : "Dark mode is disabled",
+                    isDarkMode
+                        ? "Dark mode is enabled"
+                        : "Dark mode is disabled",
                     style: TextStyle(
                       fontSize: 12,
                       color: context.textSecondary,
@@ -487,7 +490,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                 App.setThemeMode(newThemeMode);
                 setState(() {});
               },
-              activeColor: primaryGreen,
+              activeThumbColor: primaryGreen,
             ),
           ],
         ),
@@ -504,7 +507,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
         title: Text(
           'Logout',
           style: TextStyle(
-            fontFamily: fontFamily, 
+            fontFamily: fontFamily,
             fontWeight: FontWeight.bold,
             color: context.textPrimary,
           ),
@@ -522,18 +525,18 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
             child: Text(
               'Cancel',
               style: TextStyle(
-                color: context.textSecondary, 
+                color: context.textSecondary,
                 fontFamily: fontFamily,
               ),
             ),
           ),
           TextButton(
             onPressed: () async {
+              final navigator = Navigator.of(context);
               Navigator.pop(dialogContext);
               await ref.read(authViewModelProvider.notifier).logout();
               if (mounted) {
-                Navigator.pushAndRemoveUntil(
-                  context,
+                navigator.pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const LoginScreens()),
                   (route) => false,
                 );

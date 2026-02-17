@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
-import 'package:nurser_e/app/app.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
