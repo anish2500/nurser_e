@@ -5,16 +5,25 @@ import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/product_card.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
+import 'package:nurser_e/features/view_plant/presentation/pages/view_plant_screen.dart';
 
-final indoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((ref) async {
-  final repository = ref.read(plantRepositoryProvider);  // <-- Use repository instead
+final indoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((
+  ref,
+) async {
+  final repository = ref.read(
+    plantRepositoryProvider,
+  ); // <-- Use repository instead
   return await repository.getAllPlants(category: 'INDOOR');
 });
-final outdoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((ref) async {
+final outdoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((
+  ref,
+) async {
   final repository = ref.read(plantRepositoryProvider);
   return await repository.getAllPlants(category: 'OUTDOOR');
 });
-final floweringPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((ref) async {
+final floweringPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((
+  ref,
+) async {
   final repository = ref.read(plantRepositoryProvider);
   return await repository.getAllPlants(category: 'FLOWERING');
 });
@@ -113,6 +122,13 @@ class CategoriesScreen extends StatelessWidget {
                             : null,
                         isNetworkImage: true,
                         onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) =>
+                                  ViewPlantScreen(plantId: plant.id),
+                            ),
+                          );
                           debugPrint('Tapped on ${plant.name}');
                         },
                       );

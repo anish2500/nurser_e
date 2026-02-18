@@ -1,6 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 part 'plant_api_model.g.dart';
+
 @JsonSerializable()
 class PlantApiModel {
   @JsonKey(name: '_id')
@@ -12,6 +13,7 @@ class PlantApiModel {
   @JsonKey(name: 'plantImage')
   final List<String> plantImages;
   final DateTime? createdAt;
+  final int stock; 
   PlantApiModel({
     this.id,
     required this.name,
@@ -20,6 +22,7 @@ class PlantApiModel {
     required this.price,
     required this.plantImages,
     this.createdAt,
+    required this.stock, 
   });
   factory PlantApiModel.fromJson(Map<String, dynamic> json) =>
       _$PlantApiModelFromJson(json);
@@ -33,8 +36,10 @@ class PlantApiModel {
       price: price.toDouble(),
       plantImages: plantImages,
       createdAt: createdAt,
+      stock: stock,
     );
   }
+
   static List<PlantEntity> toEntityList(List<PlantApiModel> models) {
     return models.map((model) => model.toEntity()).toList();
   }

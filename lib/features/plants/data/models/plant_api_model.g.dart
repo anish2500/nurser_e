@@ -19,6 +19,7 @@ PlantApiModel _$PlantApiModelFromJson(Map<String, dynamic> json) =>
       createdAt: json['createdAt'] == null
           ? null
           : DateTime.parse(json['createdAt'] as String),
+      stock: (json['stock'] as num).toInt(),
     );
 
 Map<String, dynamic> _$PlantApiModelToJson(PlantApiModel instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$PlantApiModelToJson(PlantApiModel instance) =>
       'price': instance.price,
       'plantImage': instance.plantImages,
       'createdAt': instance.createdAt?.toIso8601String(),
+      'stock': instance.stock,
     };
