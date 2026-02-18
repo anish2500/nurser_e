@@ -24,13 +24,14 @@ class PlantHiveModelAdapter extends TypeAdapter<PlantHiveModel> {
       price: fields[4] as double,
       plantImages: (fields[5] as List).cast<String>(),
       createdAt: fields[6] as DateTime?,
+      stock: fields[7] as int,
     );
   }
 
   @override
   void write(BinaryWriter writer, PlantHiveModel obj) {
     writer
-      ..writeByte(7)
+      ..writeByte(8)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -44,7 +45,9 @@ class PlantHiveModelAdapter extends TypeAdapter<PlantHiveModel> {
       ..writeByte(5)
       ..write(obj.plantImages)
       ..writeByte(6)
-      ..write(obj.createdAt);
+      ..write(obj.createdAt)
+      ..writeByte(7)
+      ..write(obj.stock);
   }
 
   @override

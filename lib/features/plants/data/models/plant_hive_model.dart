@@ -4,8 +4,8 @@ import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 import 'package:uuid/uuid.dart';
 
 part 'plant_hive_model.g.dart';
-@HiveType(typeId: HiveTableConstant.plantTypeId)
 
+@HiveType(typeId: HiveTableConstant.plantTypeId)
 class PlantHiveModel extends HiveObject {
   @HiveField(0)
   final String? id;
@@ -21,15 +21,18 @@ class PlantHiveModel extends HiveObject {
   final List<String> plantImages;
   @HiveField(6)
   final DateTime? createdAt;
+  @HiveField(7)
+  final int stock; 
 
   PlantHiveModel({
-    String ?id, 
+    String? id,
     required this.name,
     required this.description,
     required this.category,
     required this.price,
     required this.plantImages,
     this.createdAt,
+    required this.stock, 
   }) : id = id ?? const Uuid().v4();
 
   //from Entity
@@ -42,6 +45,7 @@ class PlantHiveModel extends HiveObject {
       price: entity.price,
       plantImages: entity.plantImages,
       createdAt: entity.createdAt,
+      stock: entity.stock, 
     );
   }
 
@@ -54,7 +58,8 @@ class PlantHiveModel extends HiveObject {
       category: category,
       price: price,
       plantImages: plantImages,
-      createdAt: createdAt
+      createdAt: createdAt,
+      stock: stock, 
     );
   }
 
