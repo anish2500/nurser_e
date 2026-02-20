@@ -7,7 +7,7 @@ class ApiEndpoints {
 
   // Backend runs on port 5050 (from your server output)
   static const String baseUrl = 'http://$_physical:5050/api';
-  
+
   // For images (not under /api path)
   static const String imageBaseUrl = 'http://$_physical:5050';
 
@@ -21,8 +21,15 @@ class ApiEndpoints {
   // Optional: Add profile endpoints if needed later
   static const String userProfile = '/auth/profile';
 
-  //image add end points 
-  //plant endpoints 
+  //image add end points
+  //plant endpoints
   static const String plants = '/plants';
   static const String plantDetails = '/plants';
+
+  //cart endpoints
+  static const String cart = '/cart';
+  static const String cartClear = '/cart';
+
+  //orders
+  static const String orders = '/orders';
 }

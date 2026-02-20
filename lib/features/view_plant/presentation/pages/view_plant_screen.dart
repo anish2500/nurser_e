@@ -2,19 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
+import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 import 'package:nurser_e/app/theme/app_colors.dart';
-final plantDetailsProvider = FutureProvider.family<PlantEntity?, String>((ref, id) async {
+
+final plantDetailsProvider = FutureProvider.family<PlantEntity?, String>((
+  ref,
+  id,
+) async {
   final repository = ref.read(plantRepositoryProvider);
   return await repository.getPlantById(id);
 });
+
 class ViewPlantScreen extends ConsumerStatefulWidget {
   final String plantId;
   const ViewPlantScreen({super.key, required this.plantId});
   @override
   ConsumerState<ViewPlantScreen> createState() => _ViewPlantScreenState();
 }
+
 class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
@@ -23,11 +30,13 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
     if (imagePath.startsWith('http')) return imagePath;
     return '${ApiEndpoints.imageBaseUrl}/plant_images/$imagePath';
   }
+
   @override
   void dispose() {
     _pageController.dispose();
     super.dispose();
   }
+
   @override
   Widget build(BuildContext context) {
     final plantAsync = ref.watch(plantDetailsProvider(widget.plantId));
@@ -133,9 +142,15 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                                 fontWeight: FontWeight.w600,
                                 fontSize: 14,
                                 onPressed: () {
+                                  ref
+                                      .read(cartViewModelProvider.notifier)
+                                      .addToCart(plant);
+
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                      content: Text('${plant.name} added to cart!'),
+                                      content: Text(
+                                        '${plant.name} added to cart!',
+                                      ),
                                       backgroundColor: AppColors.primary,
                                       behavior: SnackBarBehavior.floating,
                                       shape: RoundedRectangleBorder(
@@ -172,6 +187,7 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
       ),
     );
   }
+
   Widget _buildPlantDetails(BuildContext context, PlantEntity plant) {
     return SingleChildScrollView(
       child: Column(
@@ -210,9 +226,13 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                                 color: AppColors.surfaceVariant,
                                 child: Center(
                                   child: CircularProgressIndicator(
-                                    value: loadingProgress.expectedTotalBytes != null
-                                        ? loadingProgress.cumulativeBytesLoaded /
-                                            loadingProgress.expectedTotalBytes!
+                                    value:
+                                        loadingProgress.expectedTotalBytes !=
+                                            null
+                                        ? loadingProgress
+                                                  .cumulativeBytesLoaded /
+                                              loadingProgress
+                                                  .expectedTotalBytes!
                                         : null,
                                     color: AppColors.primary,
                                   ),
@@ -338,11 +358,7 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(
-                          Icons.eco,
-                          size: 16,
-                          color: AppColors.primary,
-                        ),
+                        Icon(Icons.eco, size: 16, color: AppColors.primary),
                         SizedBox(width: 6),
                         Text(
                           plant.category.toUpperCase(),
@@ -368,7 +384,10 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildSectionHeader('Description', Icons.description_outlined),
+                  _buildSectionHeader(
+                    'Description',
+                    Icons.description_outlined,
+                  ),
                   const SizedBox(height: 12),
                   Container(
                     width: double.infinity,
@@ -393,7 +412,10 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _buildSectionHeader('Availability', Icons.inventory_2_outlined),
+                  _buildSectionHeader(
+                    'Availability',
+                    Icons.inventory_2_outlined,
+                  ),
                   const SizedBox(height: 12),
                   _buildStockStatus(plant.stock),
                   SizedBox(height: 100),
@@ -405,14 +427,11 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
       ),
     );
   }
+
   Widget _buildSectionHeader(String title, IconData icon) {
     return Row(
       children: [
-        Icon(
-          icon,
-          size: 20,
-          color: AppColors.primary,
-        ),
+        Icon(icon, size: 20, color: AppColors.primary),
         SizedBox(width: 8),
         Text(
           title,
@@ -427,6 +446,7 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
       ],
     );
   }
+
   Widget _buildStockStatus(int stock) {
     final bool isInStock = stock > 0;
     return Container(
