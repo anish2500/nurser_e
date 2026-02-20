@@ -8,6 +8,7 @@ import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/orders_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/profile_edit_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -159,16 +160,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     }
   }
 
-  // void _handleSelectedMedia(XFile file, String type) {
-  //   setState(() {
-  //     _selectedMedia.clear();
-  //     _selectedMedia.add(file);
-  //     _selectedMediaType = type;
-  //   });
-  //   // Optional: Trigger upload to server here via ViewModel
-  //   // ref.read(authViewModelProvider.notifier).uploadProfileImage(file.path);
-  // }
-
   Future<void> _pickMedia() async {
     showModalBottomSheet(
       context: context,
@@ -231,7 +222,6 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
     final userSession = ref.watch(userSessionServiceProvider);
     final userName = userSession.getUsername() ?? 'User';
     final userEmail = userSession.getUserEmail() ?? 'Email not available';
-    
 
     // Use _profilePictureUrl for consistency
     final displayImage = _profilePictureUrl?.isNotEmpty == true
@@ -354,14 +344,26 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 15),
 
-            // --- Dark Mode Toggle Menu Item ---
             _buildDarkModeToggle(),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 15),
 
-            // --- Logout Menu Item ---
+            _buildMenuItem(
+              icon: Icons.shopping_bag,
+              title: "My Orders",
+              subtitle: "Check out the orders you placed recently",
+              onTap: () => {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const OrdersScreen()),
+                ),
+              },
+            ),
+
+            const SizedBox(height: 15),
+
             _buildMenuItem(
               icon: Icons.logout_rounded,
               title: "Log out",
