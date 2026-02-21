@@ -4,7 +4,7 @@ import 'package:nurser_e/features/plants/data/datasources/local/plant_local_data
 import 'package:nurser_e/features/plants/data/datasources/remote/plant_remote_datasource.dart';
 import 'package:nurser_e/features/plants/data/models/plant_api_model.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
-import 'package:nurser_e/features/plants/domain/plant_repository.dart';
+import 'package:nurser_e/features/plants/domain/repositories/plant_repository.dart';
 
 final plantRepositoryProvider = Provider<PlantRepository>((ref) {
   return PlantRepositoryImpl(

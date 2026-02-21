@@ -199,7 +199,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                       context,
                                       MaterialPageRoute(
                                         builder: (_) =>
-                                             const CategoriesScreen(),
+                                            const CategoriesScreen(),
                                       ),
                                     );
                                   },

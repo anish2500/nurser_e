@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
@@ -209,10 +210,18 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                         },
                         itemCount: plant.plantImages.length,
                         itemBuilder: (context, index) {
-                          return Image.network(
-                            getFullImageUrl(plant.plantImages[index]),
+                          return CachedNetworkImage(
+                            imageUrl: getFullImageUrl(plant.plantImages[index]),
                             fit: BoxFit.cover,
-                            errorBuilder: (_, __, ___) => Container(
+                            placeholder: (context, url) => Container(
+                              color: AppColors.surfaceVariant,
+                              child: Center(
+                                child: CircularProgressIndicator(
+                                  color: AppColors.primary,
+                                ),
+                              ),
+                            ),
+                            errorWidget: (context, url, error) => Container(
                               color: AppColors.surfaceVariant,
                               child: Icon(
                                 Icons.local_florist,
@@ -220,25 +229,6 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                                 color: AppColors.primary.withValues(alpha: 0.5),
                               ),
                             ),
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: AppColors.surfaceVariant,
-                                child: Center(
-                                  child: CircularProgressIndicator(
-                                    value:
-                                        loadingProgress.expectedTotalBytes !=
-                                            null
-                                        ? loadingProgress
-                                                  .cumulativeBytesLoaded /
-                                              loadingProgress
-                                                  .expectedTotalBytes!
-                                        : null,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              );
-                            },
                           );
                         },
                       )

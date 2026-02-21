@@ -32,7 +32,7 @@ class CartViewModel extends Notifier<CartState> {
 
   Future<void> addToCart(PlantEntity plant) async {
     final cartItem = CartItemEntity(
-      id: '',
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
       plantId: plant.id,
       plantName: plant.name,
       plantImage: plant.plantImages.isNotEmpty ? plant.plantImages.first : '',

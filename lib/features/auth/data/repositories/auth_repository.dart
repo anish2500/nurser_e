@@ -14,7 +14,7 @@ import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
 import 'package:nurser_e/features/auth/domain/repositories/auth_repository.dart';
 import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 
-// Provider for AuthRepository 
+// Provider for AuthRepository
 final authRepositoryProvider = Provider<IAuthRepository>((ref) {
   final authLocalDataSource = ref.read(authLocalDatasourceProvider);
   final authRemoteDataSource = ref.read(authRemoteDatasourceProvider);
@@ -75,17 +75,9 @@ class AuthRepository implements IAuthRepository {
       }
     } else {
       // Offline: Try logging in from Local Hive DB
-      try {
-        final user = await _authLocalDataSource.login(email, password);
-        if (user != null) {
-          return Right(user.toEntity());
-        }
-        return const Left(
-          LocalDatabaseFailure(message: 'No local record found for this user'),
-        );
-      } catch (e) {
-        return Left(LocalDatabaseFailure(message: e.toString()));
-      }
+      return const Left(
+        ApiFailure(message: 'No internet connection. Please login when online'),
+      );
     }
   }
 
@@ -205,16 +197,18 @@ class AuthRepository implements IAuthRepository {
   }
 
   @override
-Future<Either<Failure, AuthEntity>> updateProfile(UpdateProfileParams params) async {
-  if (await _networkInfo.isConnected) {
-    try {
-      final result = await _authRemoteDataSource.updateProfile(params);
-      return Right(result);
-    } catch (e) {
-      return Left(ApiFailure(message: e.toString()));
+  Future<Either<Failure, AuthEntity>> updateProfile(
+    UpdateProfileParams params,
+  ) async {
+    if (await _networkInfo.isConnected) {
+      try {
+        final result = await _authRemoteDataSource.updateProfile(params);
+        return Right(result);
+      } catch (e) {
+        return Left(ApiFailure(message: e.toString()));
+      }
+    } else {
+      return Left(ApiFailure(message: 'No internet connection'));
     }
-  } else {
-    return Left(ApiFailure(message: 'No internet connection'));
   }
-}
 }

@@ -8,19 +8,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   if (!kIsWeb) {
     final hiveService = HiveService();
     await hiveService.init();
     
-
-    
+    final sharedPrefs = await SharedPreferences.getInstance();
+    runApp(ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(sharedPrefs),
+        hiveServiceProvider.overrideWithValue(hiveService),  // <-- ADD THIS
+      ],
+      child: const App()));
   }
-  final sharedPrefs = await SharedPreferences.getInstance();
-
-  runApp(ProviderScope(
-    overrides: [
-      sharedPreferencesProvider.overrideWithValue(sharedPrefs)
-    ],
-    child:const  App()));
 }
