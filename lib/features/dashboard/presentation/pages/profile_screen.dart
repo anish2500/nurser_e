@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/app/app.dart';
@@ -11,6 +12,7 @@ import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.d
 import 'package:nurser_e/features/dashboard/presentation/pages/orders_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/profile_edit_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:nurser_e/core/api/api_endpoints.dart';
 
 class ProfileScreen extends ConsumerStatefulWidget {
   const ProfileScreen({super.key});
@@ -225,7 +227,7 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
     // Use _profilePictureUrl for consistency
     final displayImage = _profilePictureUrl?.isNotEmpty == true
-        ? 'http://192.168.18.4:5050/$_profilePictureUrl'
+        ? '${ApiEndpoints.imageBaseUrl}/$_profilePictureUrl'
         : null;
 
     return Scaffold(
@@ -262,12 +264,11 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
                         CircleAvatar(
                           radius: 35,
                           backgroundColor: Colors.white,
-                          // Priority: New upload > Stored > Initial
                           backgroundImage: _selectedMedia.isNotEmpty
                               ? FileImage(File(_selectedMedia[0].path))
                               : displayImage != null
-                              ? NetworkImage(displayImage)
-                              : null,
+                                  ? CachedNetworkImageProvider(displayImage)
+                                  : null,
                           child:
                               (_selectedMedia.isEmpty && displayImage == null)
                               ? Text(

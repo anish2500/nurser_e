@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 class ProductCard extends StatelessWidget {
   final String title;
@@ -52,35 +53,17 @@ class ProductCard extends StatelessWidget {
                             top: Radius.circular(8),
                           ),
                           child: isNetworkImage
-                              ? Image.network(
-                                  imagePath!,
+                              ? CachedNetworkImage(
+                                  imageUrl: imagePath!,
                                   fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Icon(
-                                      Icons.image,
-                                      size: 40,
-                                      color: Colors.grey[600],
-                                    );
-                                  },
-                                  loadingBuilder:
-                                      (context, child, loadingProgress) {
-                                        if (loadingProgress == null) {
-                                          return child;
-                                        }
-                                        return Center(
-                                          child: CircularProgressIndicator(
-                                            value:
-                                                loadingProgress
-                                                        .expectedTotalBytes !=
-                                                    null
-                                                ? loadingProgress
-                                                          .cumulativeBytesLoaded /
-                                                      loadingProgress
-                                                          .expectedTotalBytes!
-                                                : null,
-                                          ),
-                                        );
-                                      },
+                                  placeholder: (context, url) => Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                  errorWidget: (context, url, error) => Icon(
+                                    Icons.image,
+                                    size: 40,
+                                    color: Colors.grey[600],
+                                  ),
                                 )
                               : Image.asset(
                                   imagePath!,

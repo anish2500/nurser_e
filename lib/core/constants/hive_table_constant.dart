@@ -8,4 +8,7 @@ class HiveTableConstant {
 
   static const int plantTypeId = 1;
   static const String plantTable = 'plant_table';
+
+  static const int cartTypeId = 2; 
+  static const String cartTable = 'cart_table';
 }

@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/features/cart/presentation/state/cart_state.dart';
 import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
 import 'package:nurser_e/app/theme/app_colors.dart';
+import 'package:nurser_e/core/services/connectivity/network_info.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -156,12 +158,19 @@ class _CartScreenState extends ConsumerState<CartScreen> {
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: fullImageUrl.isNotEmpty
-                ? Image.network(
-                    fullImageUrl,
+                ? CachedNetworkImage(
+                    imageUrl: fullImageUrl,
                     width: 70,
                     height: 70,
                     fit: BoxFit.cover,
-                    errorBuilder: (_, __, ___) => _buildPlaceholderImage(),
+                    placeholder: (context, url) => Container(
+                      width: 70,
+                      height: 70,
+                      color: Colors.grey[300],
+                      child: Icon(Icons.image, color: Colors.grey[600]),
+                    ),
+                    errorWidget: (context, url, error) =>
+                        _buildPlaceholderImage(),
                   )
                 : _buildPlaceholderImage(),
           ),
@@ -276,7 +285,30 @@ class _CartScreenState extends ConsumerState<CartScreen> {
             ),
             ElevatedButton(
               onPressed: () async {
+                final networkInfo = ref.read(networkInfoProvider);
                 final messenger = ScaffoldMessenger.of(context);
+
+                final isOnline = await networkInfo.isConnected;
+
+                if (!isOnline) {
+                  // Show dialog asking user to go online
+                  showDialog(
+                    context: context,
+                    builder: (context) => AlertDialog(
+                      title: const Text('No Internet Connection'),
+                      content: const Text(
+                        'Please go online to proceed with checkout.',
+                      ),
+                      actions: [
+                        TextButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('OK'),
+                        ),
+                      ],
+                    ),
+                  );
+                  return;
+                }
                 try {
                   await ref.read(cartViewModelProvider.notifier).checkout();
                   messenger.showSnackBar(
