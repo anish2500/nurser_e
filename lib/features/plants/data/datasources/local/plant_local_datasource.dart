@@ -10,6 +10,7 @@ final plantLocalDatasourceProvider = Provider<PlantLocalDatasource>((ref) {
 abstract class PlantLocalDatasource {
   Future<List<PlantEntity>> getCachedPlants({String? category});
   Future<void> cachePlants(List<PlantEntity> plants);
+  Future<PlantEntity?> getCachedPlantById(String id);
 }
 
 class PlantLocalDatasourceImpl implements PlantLocalDatasource {
@@ -31,6 +32,17 @@ class PlantLocalDatasourceImpl implements PlantLocalDatasource {
     if (category != null) {
       return entities.where((plant) => plant.category == category).toList();
     }
-    return entities; 
+    return entities;
+  }
+
+  @override
+  Future<PlantEntity?> getCachedPlantById(String id) async {
+    final cachedModels = hiveService.getCachePlants();
+    final entities = PlantHiveModel.toEntityList(cachedModels);
+    try {
+      return entities.firstWhere((plant) => plant.id == id);
+    } catch (e) {
+      return null; 
+    }
   }
 }
