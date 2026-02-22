@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
+import 'package:nurser_e/core/services/connectivity/network_info.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
@@ -132,35 +133,51 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                           ],
                         ),
                       ),
-                      Expanded(
-                        flex: 1,
-                        child: plant.stock > 0
-                            ? MyButton(
-                                text: 'Add to Cart',
-                                height: 50,
-                                backgroundColor: AppColors.primary,
-                                textColor: Colors.white,
-                                fontWeight: FontWeight.w600,
-                                fontSize: 14,
-                                onPressed: () {
-                                  ref
-                                      .read(cartViewModelProvider.notifier)
-                                      .addToCart(plant);
-
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(
-                                      content: Text(
-                                        '${plant.name} added to cart!',
-                                      ),
-                                      backgroundColor: AppColors.primary,
-                                      behavior: SnackBarBehavior.floating,
-                                      shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  );
-                                },
-                              )
+                    Expanded(
+  flex: 1,
+  child: plant.stock > 0
+      ? MyButton(
+          text: 'Add to Cart',
+          height: 50,
+          backgroundColor: AppColors.primary,
+          textColor: Colors.white,
+          fontWeight: FontWeight.w600,
+          fontSize: 14,
+          onPressed: () async {
+            final networkInfo = ref.read(networkInfoProvider);
+            final isOnline = await networkInfo.isConnected;
+            
+            if (!isOnline) {
+              if (!mounted) return;
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text(
+                    'You are offline. Please go online to add items to cart.',
+                  ),
+                  backgroundColor: Colors.orange,
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                ),
+              );
+              return;
+            }
+            
+            ref.read(cartViewModelProvider.notifier).addToCart(plant);
+            
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('${plant.name} added to cart!'),
+                backgroundColor: AppColors.primary,
+                behavior: SnackBarBehavior.floating,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            );
+          },
+        )
                             : Container(
                                 height: 50,
                                 decoration: BoxDecoration(

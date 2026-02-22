@@ -45,7 +45,7 @@ class PlantRepositoryImpl implements PlantRepository {
       final model = await remoteDatasource.getPlantById(id);
       return model?.toEntity();
     } catch (e) {
-      return null;
+      return await localDatasource.getCachedPlantById(id);
     }
   }
 }

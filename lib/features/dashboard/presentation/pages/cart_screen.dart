@@ -7,6 +7,7 @@ import 'package:nurser_e/features/cart/presentation/state/cart_state.dart';
 import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
 import 'package:nurser_e/app/theme/app_colors.dart';
 import 'package:nurser_e/core/services/connectivity/network_info.dart';
+import 'package:nurser_e/features/payment/presentation/pages/payment_screen.dart';
 
 class CartScreen extends ConsumerStatefulWidget {
   const CartScreen({super.key});
@@ -291,7 +292,6 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                 final isOnline = await networkInfo.isConnected;
 
                 if (!isOnline) {
-                  // Show dialog asking user to go online
                   showDialog(
                     context: context,
                     builder: (context) => AlertDialog(
@@ -309,22 +309,23 @@ class _CartScreenState extends ConsumerState<CartScreen> {
                   );
                   return;
                 }
-                try {
-                  await ref.read(cartViewModelProvider.notifier).checkout();
+                
+                if (cartState.items.isEmpty) {
                   messenger.showSnackBar(
                     SnackBar(
-                      content: const Text('Order placed successfully!'),
-                      backgroundColor: AppColors.success,
-                    ),
-                  );
-                } catch (e) {
-                  messenger.showSnackBar(
-                    SnackBar(
-                      content: const Text('Checkout failed'),
+                      content: const Text('Your cart is empty'),
                       backgroundColor: AppColors.error,
                     ),
                   );
+                  return;
                 }
+                
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const PaymentScreen(),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primary,

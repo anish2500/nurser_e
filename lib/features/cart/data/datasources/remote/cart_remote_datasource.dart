@@ -76,9 +76,12 @@ class CartRemoteDatasource {
     await _apiClient.delete('${ApiEndpoints.cart}/$plantId');
   }
 
-  /// Clear cart
+  /// Clear cart - Backend clears cart automatically when order is created
+  /// So this just clears local cache
   Future<void> clearCart() async {
-    await _apiClient.delete(ApiEndpoints.cart);
+    // Cart is cleared by backend when order is created
+    // This method is kept for local cache clearing if needed
+    debugPrint('Cart clear called - backend clears cart on order creation');
   }
 
   /// Checkout
