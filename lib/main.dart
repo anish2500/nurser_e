@@ -16,7 +16,7 @@ void main() async {
     runApp(ProviderScope(
       overrides: [
         sharedPreferencesProvider.overrideWithValue(sharedPrefs),
-        hiveServiceProvider.overrideWithValue(hiveService),  // <-- ADD THIS
+        hiveServiceProvider.overrideWithValue(hiveService),  
       ],
       child: const App()));
   }

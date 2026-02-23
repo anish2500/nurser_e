@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nurser_e/features/dashboard/presentation/pages/about_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/cart_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/categories_screen.dart';
+import 'package:nurser_e/features/dashboard/presentation/pages/favorites_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/home_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/profile_screen.dart';
 
@@ -19,8 +19,8 @@ class _BottomNavigationLayoutState extends State<BottomNavigationLayout> {
     const HomeScreen(),
     const CartScreen(),
     const CategoriesScreen(),
+    const FavoritesScreen(),
     const ProfileScreen(),
-    const AboutScreen(),
   ];
 
   @override
@@ -41,13 +41,10 @@ class _BottomNavigationLayoutState extends State<BottomNavigationLayout> {
             label: 'Categories',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
+            icon: Icon(Icons.favorite_border_sharp),
+            label: 'Favorites',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info_outline_rounded),
-            label: 'About Us',
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
         ],
         currentIndex: _selectedIndex,
         onTap: (index) {
