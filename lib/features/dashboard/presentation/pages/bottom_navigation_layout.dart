@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:nurser_e/features/dashboard/presentation/pages/cart_screen.dart';
-import 'package:nurser_e/features/dashboard/presentation/pages/categories_screen.dart';
-import 'package:nurser_e/features/dashboard/presentation/pages/favorites_screen.dart';
+import 'package:nurser_e/features/cart/presentation/pages/cart_screen.dart';
+import 'package:nurser_e/features/plants/presentation/pages/categories_screen.dart';
+import 'package:nurser_e/features/favorites/presentation/pages/favorites_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/home_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/profile_screen.dart';
 

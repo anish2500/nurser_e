@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/product_card.dart';
+import 'package:nurser_e/features/favorites/presentation/view_model/favorite_view_model.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
-import 'package:nurser_e/features/view_plant/presentation/pages/view_plant_screen.dart';
+import 'package:nurser_e/features/plants/presentation/pages/view_plant_screen.dart';
 
 final indoorPlantsProvider = FutureProvider.autoDispose<List<PlantEntity>>((
   ref,
@@ -89,6 +90,7 @@ class CategoriesScreen extends StatelessWidget {
           child: Consumer(
             builder: (context, ref, child) {
               final plantsAsync = ref.watch(categoryProvider);
+              final favoritesState = ref.watch(favoritesViewModelProvider);
 
               return plantsAsync.when(
                 data: (plants) {
@@ -107,6 +109,9 @@ class CategoriesScreen extends StatelessWidget {
                     itemCount: plants.length,
                     itemBuilder: (context, index) {
                       final plant = plants[index];
+                      final isFavorite = favoritesState.favorites.any(
+                        (fav) => fav.plantId == plant.id,
+                      );
                       String getFullImageUrl(String? imagePath) {
                         if (imagePath == null || imagePath.isEmpty) return '';
                         if (imagePath.startsWith('http')) return imagePath;
@@ -121,6 +126,28 @@ class CategoriesScreen extends StatelessWidget {
                             ? getFullImageUrl(plant.plantImages.first)
                             : null,
                         isNetworkImage: true,
+                        isFavorite: isFavorite,
+                        onFavoriteToggle: () {
+                          ref
+                              .read(favoritesViewModelProvider.notifier)
+                              .toggleFavorite(plant);
+                          final isCurrentlyFavorite = favoritesState.favorites
+                              .any((fav) => fav.plantId == plant.id);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                isCurrentlyFavorite
+                                    ? '${plant.name} removed from favorites!'
+                                    : '${plant.name} added to favorites!',
+                              ),
+                              backgroundColor: isCurrentlyFavorite
+                                  ? Colors.red
+                                  : Colors.green,
+                              behavior: SnackBarBehavior.floating,
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                         onTap: () {
                           Navigator.push(
                             context,

@@ -5,11 +5,12 @@ import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/core/widgets/product_card.dart';
 import 'package:nurser_e/app/theme/theme_colors_extension.dart';
+import 'package:nurser_e/features/favorites/presentation/view_model/favorite_view_model.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
-import 'package:nurser_e/features/view_plant/presentation/pages/view_plant_screen.dart';
+import 'package:nurser_e/features/plants/presentation/pages/view_plant_screen.dart';
 import 'package:nurser_e/app/theme/app_colors.dart';
-import 'package:nurser_e/features/dashboard/presentation/pages/categories_screen.dart';
+import 'package:nurser_e/features/plants/presentation/pages/categories_screen.dart';
 
 final searchQueryProvider = StateProvider<String>((ref) => '');
 
@@ -54,6 +55,14 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(favoritesViewModelProvider.notifier).loadFavorites();
+    });
+  }
+
+  @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
@@ -70,6 +79,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   Widget build(BuildContext context) {
     final plantsAsync = ref.watch(filteredPlantsProvider);
     final query = ref.watch(searchQueryProvider);
+    final favoritesState = ref.watch(favoritesViewModelProvider);
 
     return SizedBox.expand(
       child: Column(
@@ -360,6 +370,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                           itemCount: displayPlants.length,
                           itemBuilder: (context, index) {
                             final plant = displayPlants[index];
+                            final isFavorite = favoritesState.favorites.any(
+                              (fav) => fav.plantId == plant.id,
+                            );
                             return ProductCard(
                               title: plant.name,
                               price: 'Rs ${plant.price.toStringAsFixed(2)}',
@@ -368,6 +381,29 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
                                   ? '${ApiEndpoints.imageBaseUrl}/plant_images/${plant.plantImages.first}'
                                   : null,
                               isNetworkImage: true,
+                              isFavorite: isFavorite,
+                              onFavoriteToggle: () {
+                                ref
+                                    .read(favoritesViewModelProvider.notifier)
+                                    .toggleFavorite(plant);
+                                final isCurrentlyFavorite = favoritesState
+                                    .favorites
+                                    .any((fav) => fav.plantId == plant.id);
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(
+                                    content: Text(
+                                      isCurrentlyFavorite
+                                          ? '${plant.name} removed from favorites!'
+                                          : '${plant.name} added to favorite!',
+                                    ),
+                                    backgroundColor: isCurrentlyFavorite
+                                        ? Colors.red
+                                        : Colors.green,
+                                    behavior: SnackBarBehavior.floating,
+                                    duration: Duration(seconds: 1),
+                                  ),
+                                );
+                              },
                               onTap: () {
                                 Navigator.push(
                                   context,

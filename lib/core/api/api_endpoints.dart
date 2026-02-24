@@ -32,4 +32,7 @@ class ApiEndpoints {
 
   //orders
   static const String orders = '/orders';
+
+  //favorites 
+  static const String favorites = '/favorites';
 }
