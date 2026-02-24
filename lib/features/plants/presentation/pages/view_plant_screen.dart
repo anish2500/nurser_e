@@ -5,6 +5,7 @@ import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:nurser_e/core/services/connectivity/network_info.dart';
 import 'package:nurser_e/core/widgets/my_button.dart';
 import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
+import 'package:nurser_e/features/favorites/presentation/view_model/favorite_view_model.dart';
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 import 'package:nurser_e/app/theme/app_colors.dart';
@@ -133,51 +134,60 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                           ],
                         ),
                       ),
-                    Expanded(
-  flex: 1,
-  child: plant.stock > 0
-      ? MyButton(
-          text: 'Add to Cart',
-          height: 50,
-          backgroundColor: AppColors.primary,
-          textColor: Colors.white,
-          fontWeight: FontWeight.w600,
-          fontSize: 14,
-          onPressed: () async {
-            final networkInfo = ref.read(networkInfoProvider);
-            final isOnline = await networkInfo.isConnected;
-            
-            if (!isOnline) {
-              if (!mounted) return;
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text(
-                    'You are offline. Please go online to add items to cart.',
-                  ),
-                  backgroundColor: Colors.orange,
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                ),
-              );
-              return;
-            }
-            
-            ref.read(cartViewModelProvider.notifier).addToCart(plant);
-            
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text('${plant.name} added to cart!'),
-                backgroundColor: AppColors.primary,
-                behavior: SnackBarBehavior.floating,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            );
-          },
-        )
+                      Expanded(
+                        flex: 1,
+                        child: plant.stock > 0
+                            ? MyButton(
+                                text: 'Add to Cart',
+                                height: 50,
+                                backgroundColor: AppColors.primary,
+                                textColor: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 14,
+                                onPressed: () async {
+                                  final networkInfo = ref.read(
+                                    networkInfoProvider,
+                                  );
+                                  final isOnline =
+                                      await networkInfo.isConnected;
+
+                                  if (!isOnline) {
+                                    if (!mounted) return;
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text(
+                                          'You are offline. Please go online to add items to cart.',
+                                        ),
+                                        backgroundColor: Colors.orange,
+                                        behavior: SnackBarBehavior.floating,
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            10,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                    return;
+                                  }
+
+                                  ref
+                                      .read(cartViewModelProvider.notifier)
+                                      .addToCart(plant);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(
+                                        '${plant.name} added to cart!',
+                                      ),
+                                      backgroundColor: AppColors.primary,
+                                      behavior: SnackBarBehavior.floating,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              )
                             : Container(
                                 height: 50,
                                 decoration: BoxDecoration(
@@ -302,6 +312,65 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                       color: AppColors.textPrimary,
                     ),
                   ),
+                ),
+              ),
+              // Favorite Button
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 8,
+                right: 16,
+                child: Consumer(
+                  builder: (context, ref, child) {
+                    final favoritesState = ref.watch(
+                      favoritesViewModelProvider,
+                    );
+                    final isFavorite = favoritesState.favorites.any(
+                      (fav) => fav.plantId == plant.id,
+                    );
+                    return GestureDetector(
+                      onTap: () {
+                        ref
+                            .read(favoritesViewModelProvider.notifier)
+                            .toggleFavorite(plant);
+                        final isCurrentlyFavorite = favoritesState.favorites
+                            .any((fav) => fav.plantId == plant.id);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              isCurrentlyFavorite
+                                  ? '${plant.name} removed from favorites!'
+                                  : '${plant.name} added to favorites!',
+                            ),
+                            backgroundColor: isCurrentlyFavorite
+                                ? Colors.red
+                                : Colors.green,
+                            behavior: SnackBarBehavior.floating,
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.9),
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.1),
+                              blurRadius: 8,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Icon(
+                          isFavorite ? Icons.favorite : Icons.favorite_border,
+                          size: 20,
+                          color: isFavorite
+                              ? Colors.red
+                              : AppColors.textPrimary,
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
               // Page Indicator

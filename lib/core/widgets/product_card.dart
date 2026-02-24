@@ -10,6 +10,8 @@ class ProductCard extends StatelessWidget {
   final double height;
   final VoidCallback? onTap;
   final bool isNetworkImage;
+  final bool isFavorite;
+  final VoidCallback? onFavoriteToggle; 
 
   const ProductCard({
     super.key,
@@ -21,6 +23,8 @@ class ProductCard extends StatelessWidget {
     this.height = 190,
     this.onTap,
     this.isNetworkImage = false,
+    required this.isFavorite, 
+    this.onFavoriteToggle, 
   });
 
   @override
@@ -31,105 +35,134 @@ class ProductCard extends StatelessWidget {
       child: Card(
         elevation: 2,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(8),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                flex: 3,
-                child: Container(
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.vertical(
-                      top: Radius.circular(8),
+        child: Stack(
+          children: [
+            InkWell(
+              onTap: onTap,
+              borderRadius: BorderRadius.circular(8),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Expanded(
+                    flex: 3,
+                    child: Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.vertical(
+                          top: Radius.circular(8),
+                        ),
+                        color: Colors.grey[300],
+                      ),
+                      child: imagePath != null
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.vertical(
+                                top: Radius.circular(8),
+                              ),
+                              child: isNetworkImage
+                                  ? CachedNetworkImage(
+                                      imageUrl: imagePath!,
+                                      fit: BoxFit.cover,
+                                      placeholder: (context, url) => Center(
+                                        child: CircularProgressIndicator(),
+                                      ),
+                                      errorWidget: (context, url, error) => Icon(
+                                        Icons.image,
+                                        size: 40,
+                                        color: Colors.grey[600],
+                                      ),
+                                    )
+                                  : Image.asset(
+                                      imagePath!,
+                                      fit: BoxFit.cover,
+                                      errorBuilder: (context, error, stackTrace) {
+                                        return Icon(
+                                          Icons.image,
+                                          size: 40,
+                                          color: Colors.grey[600],
+                                        );
+                                      },
+                                    ),
+                            )
+                          : Icon(Icons.image, size: 40, color: Colors.grey[600]),
                     ),
-                    color: Colors.grey[300],
                   ),
-                  child: imagePath != null
-                      ? ClipRRect(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(8),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 11,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
-                          child: isNetworkImage
-                              ? CachedNetworkImage(
-                                  imageUrl: imagePath!,
-                                  fit: BoxFit.cover,
-                                  placeholder: (context, url) => Center(
-                                    child: CircularProgressIndicator(),
-                                  ),
-                                  errorWidget: (context, url, error) => Icon(
-                                    Icons.image,
-                                    size: 40,
-                                    color: Colors.grey[600],
-                                  ),
-                                )
-                              : Image.asset(
-                                  imagePath!,
-                                  fit: BoxFit.cover,
-                                  errorBuilder: (context, error, stackTrace) {
-                                    return Icon(
-                                      Icons.image,
-                                      size: 40,
-                                      color: Colors.grey[600],
-                                    );
-                                  },
-                                ),
-                        )
-                      : Icon(Icons.image, size: 40, color: Colors.grey[600]),
-                ),
+                          SizedBox(height: 6),
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 4,
+                              vertical: 1,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withValues(alpha: 0.1),
+                              borderRadius: BorderRadius.circular(3),
+                            ),
+                            child: Text(
+                              categories,
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontSize: 9,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 6),
+                          Text(
+                            price,
+                            style: TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 10,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
-              Expanded(
-                flex: 2,
-                child: Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        title,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 11,
-                        ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      SizedBox(height: 6),
-                      Container(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 4,
-                          vertical: 1,
-                        ),
-                        decoration: BoxDecoration(
-                          color: Colors.green.withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(3),
-                        ),
-                        child: Text(
-                          categories,
-                          style: TextStyle(
-                            color: Colors.green,
-                            fontSize: 9,
-                            fontWeight: FontWeight.w500,
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 6),
-                      Text(
-                        price,
-                        style: TextStyle(
-                          color: Colors.green,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 10,
-                        ),
+            ),
+            Positioned(
+              top: 8,
+              right: 8,
+              child: GestureDetector(
+                onTap: onFavoriteToggle,
+                child: Container(
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        blurRadius: 4,
                       ),
                     ],
                   ),
+                  child: Icon(
+                    isFavorite ? Icons.favorite : Icons.favorite_border,
+                    color: isFavorite ? Colors.red : Colors.grey,
+                    size: 20,
+                  ),
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
