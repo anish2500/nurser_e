@@ -9,6 +9,8 @@ import 'package:nurser_e/features/favorites/presentation/view_model/favorite_vie
 import 'package:nurser_e/features/plants/data/repositories/plant_repository.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
 import 'package:nurser_e/app/theme/app_colors.dart';
+import 'package:nurser_e/features/plants/presentation/widgets/plant_section_header.dart';
+import 'package:nurser_e/features/plants/presentation/widgets/plant_stock_status.dart';
 
 final plantDetailsProvider = FutureProvider.family<PlantEntity?, String>((
   ref,
@@ -460,9 +462,9 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                     ),
                   ),
                   const SizedBox(height: 20),
-                  _buildSectionHeader(
-                    'Description',
-                    Icons.description_outlined,
+                  PlantSectionHeader(
+                    title: 'Description',
+                    icon: Icons.description_outlined,
                   ),
                   const SizedBox(height: 12),
                   Container(
@@ -488,96 +490,15 @@ class _ViewPlantScreenState extends ConsumerState<ViewPlantScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  _buildSectionHeader(
-                    'Availability',
-                    Icons.inventory_2_outlined,
+                  PlantSectionHeader(
+                    title: 'Availability',
+                    icon: Icons.inventory_2_outlined,
                   ),
                   const SizedBox(height: 12),
-                  _buildStockStatus(plant.stock),
+                  PlantStockStatus(stock: plant.stock),
                   SizedBox(height: 100),
                 ],
               ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildSectionHeader(String title, IconData icon) {
-    return Row(
-      children: [
-        Icon(icon, size: 20, color: AppColors.primary),
-        SizedBox(width: 8),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w600,
-            color: Theme.of(context).brightness == Brightness.dark
-                ? AppColors.darkTextPrimary
-                : AppColors.textPrimary,
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildStockStatus(int stock) {
-    final bool isInStock = stock > 0;
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: isInStock
-            ? AppColors.success.withValues(alpha: 0.1)
-            : AppColors.error.withValues(alpha: 0.1),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isInStock
-              ? AppColors.success.withValues(alpha: 0.3)
-              : AppColors.error.withValues(alpha: 0.3),
-        ),
-      ),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(
-              color: isInStock
-                  ? AppColors.success.withValues(alpha: 0.2)
-                  : AppColors.error.withValues(alpha: 0.2),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              isInStock ? Icons.check_circle : Icons.cancel,
-              color: isInStock ? AppColors.success : AppColors.error,
-              size: 24,
-            ),
-          ),
-          SizedBox(width: 16),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  isInStock ? 'In Stock' : 'Out of Stock',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: isInStock ? AppColors.success : AppColors.error,
-                  ),
-                ),
-                SizedBox(height: 4),
-                Text(
-                  isInStock
-                      ? '$stock items available'
-                      : 'Currently unavailable',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
             ),
           ),
         ],

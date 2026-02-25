@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/core/services/hive/hive_service.dart';
 import 'package:nurser_e/features/plants/data/datasources/local/plant_local_datasource.dart';
+import 'package:nurser_e/features/plants/data/datasources/plant_datasource.dart';
 import 'package:nurser_e/features/plants/data/datasources/remote/plant_remote_datasource.dart';
 import 'package:nurser_e/features/plants/data/models/plant_api_model.dart';
 import 'package:nurser_e/features/plants/domain/entities/plant_entity.dart';
@@ -15,8 +16,8 @@ final plantRepositoryProvider = Provider<PlantRepository>((ref) {
 });
 
 class PlantRepositoryImpl implements PlantRepository {
-  final PlantRemoteDatasource remoteDatasource;
-  final PlantLocalDatasource localDatasource;
+  final IPlantRemoteDataSource remoteDatasource;
+  final IPlantLocalDataSource localDatasource;
   final HiveService hiveService;
 
   PlantRepositoryImpl({

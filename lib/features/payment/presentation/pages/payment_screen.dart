@@ -4,6 +4,7 @@ import 'package:nurser_e/app/theme/app_colors.dart';
 import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.dart';
 import 'package:nurser_e/features/payment/presentation/state/payment_state.dart';
 import 'package:nurser_e/features/payment/presentation/view_model/payment_view_model.dart';
+import 'package:nurser_e/features/payment/presentation/widgets/order_summary_widget.dart';
 
 class PaymentScreen extends ConsumerStatefulWidget {
   const PaymentScreen({super.key});
@@ -64,7 +65,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildOrderSummary(cartState.totalAmount, cartState.totalItems),
+            OrderSummaryWidget(context: context, totalAmount: cartState.totalAmount, totalItems: cartState.totalItems),
             const SizedBox(height: 24),
             _buildPaymentMethods(),
             const SizedBox(height: 24),
@@ -74,85 +75,6 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
         ),
       ),
       bottomNavigationBar: _buildPayButton(cartState.totalAmount),
-    );
-  }
-
-  Widget _buildOrderSummary(double totalAmount, int totalItems) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? AppColors.darkSurface
-            : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
-            blurRadius: 10,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Order Summary',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white
-                  : Colors.black,
-            ),
-          ),
-          const SizedBox(height: 12),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Items ($totalItems)',
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey[400]
-                      : Colors.grey[600],
-                ),
-              ),
-              Text(
-                'Rs ${totalAmount.toStringAsFixed(2)}',
-                style: TextStyle(
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.grey[400]
-                      : Colors.grey[600],
-                ),
-              ),
-            ],
-          ),
-          const Divider(height: 24),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Total',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? Colors.white
-                      : Colors.black,
-                ),
-              ),
-              Text(
-                'Rs ${totalAmount.toStringAsFixed(2)}',
-                style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.primary,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 

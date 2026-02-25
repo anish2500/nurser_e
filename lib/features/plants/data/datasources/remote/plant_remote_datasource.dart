@@ -2,17 +2,19 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/core/api/api_client.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
+import 'package:nurser_e/features/plants/data/datasources/plant_datasource.dart';
 import 'package:nurser_e/features/plants/data/models/plant_api_model.dart';
 
-final plantRemoteDatasourceProvider = Provider<PlantRemoteDatasource>((ref) {
+final plantRemoteDatasourceProvider = Provider<IPlantRemoteDataSource>((ref) {
   return PlantRemoteDatasource(apiClient: ref.read(apiClientProvider));
 });
 
-class PlantRemoteDatasource {
+class PlantRemoteDatasource implements IPlantRemoteDataSource {
   final ApiClient _apiClient;
 
   PlantRemoteDatasource({required ApiClient apiClient}) : _apiClient = apiClient;
 
+  @override
   Future<List<PlantApiModel>> getAllPlants({String? category}) async {
     final queryParams = <String, dynamic>{};
 
@@ -33,6 +35,7 @@ class PlantRemoteDatasource {
     return [];
   }
 
+  @override
   Future<PlantApiModel?> getPlantById(String id) async {
     final response = await _apiClient.get('${ApiEndpoints.plantDetails}/$id');
 

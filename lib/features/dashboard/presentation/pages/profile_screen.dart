@@ -9,6 +9,7 @@ import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:nurser_e/features/dashboard/presentation/widgets/build_menu_item.dart';
 import 'package:nurser_e/features/orders/presentation/pages/orders_screen.dart';
 import 'package:nurser_e/features/dashboard/presentation/pages/profile_edit_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -351,83 +352,16 @@ class _ProfileScreenState extends ConsumerState<ProfileScreen> {
 
             const SizedBox(height: 15),
 
-            _buildMenuItem(
-              icon: Icons.shopping_bag,
-              title: "My Orders",
-              subtitle: "Check out the orders you placed recently",
-              onTap: () => {
+            BuildMenuItem(context: context, lightGreen: lightGreen, primaryGreen: primaryGreen, fontFamily: fontFamily, icon: Icons.shopping_bag, title: "My Orders", subtitle: "Check out the orders you placed recently", onTap: () => {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (_) => const OrdersScreen()),
                 ),
-              },
-            ),
+              }),
 
             const SizedBox(height: 15),
 
-            _buildMenuItem(
-              icon: Icons.logout_rounded,
-              title: "Log out",
-              subtitle: "Further secure your account for safety",
-              onTap: () => _showLogoutDialog(context),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuItem({
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required VoidCallback onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: context.isDarkMode ? Colors.grey[800] : lightGreen,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(icon, color: primaryGreen),
-            ),
-            const SizedBox(width: 15),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      fontFamily: fontFamily,
-                      color: context.textPrimary,
-                    ),
-                  ),
-                  Text(
-                    subtitle,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: context.textSecondary,
-                      fontFamily: fontFamily,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Icon(
-              Icons.arrow_forward_ios,
-              size: 16,
-              color: context.textSecondary,
-            ),
+            BuildMenuItem(context: context, lightGreen: lightGreen, primaryGreen: primaryGreen, fontFamily: fontFamily, icon: Icons.logout_rounded, title: "Log out", subtitle: "Further secure your account for safety", onTap: () => _showLogoutDialog(context)),
           ],
         ),
       ),

@@ -2,17 +2,19 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nurser_e/core/api/api_client.dart';
 import 'package:nurser_e/core/api/api_endpoints.dart';
+import 'package:nurser_e/features/cart/data/datasources/cart_datasource.dart';
 import 'package:nurser_e/features/cart/data/models/cart_api_model.dart';
 
 final cartRemoteDatasourceProvider = Provider<CartRemoteDatasource>((ref) {
   return CartRemoteDatasource(apiClient: ref.read(apiClientProvider));
 });
 
-class CartRemoteDatasource {
+class CartRemoteDatasource implements ICartRemoteDatasource{
   final ApiClient _apiClient;
   CartRemoteDatasource({required ApiClient apiClient}) : _apiClient = apiClient;
 
   /// Get cart items
+  @override  
   Future<List<CartApiModel>> getCart() async {
     try {
       final response = await _apiClient.get(ApiEndpoints.cart);
@@ -33,7 +35,10 @@ class CartRemoteDatasource {
     }
   }
 
+
+
   /// Add item to cart
+  @override 
   Future<CartApiModel> addToCart({
     required String plantId,
     required String plantName,
@@ -62,6 +67,7 @@ class CartRemoteDatasource {
   }
 
   /// Update cart item quantity
+  @override 
   Future<CartApiModel> updateCartItem(String plantId, int quantity) async {
     final response = await _apiClient.put(
       '${ApiEndpoints.cart}/$plantId',
@@ -72,12 +78,14 @@ class CartRemoteDatasource {
   }
 
   /// Remove item from cart
+  @override 
   Future<void> removeFromCart(String plantId) async {
     await _apiClient.delete('${ApiEndpoints.cart}/$plantId');
   }
 
   /// Clear cart - Backend clears cart automatically when order is created
   /// So this just clears local cache
+  @override 
   Future<void> clearCart() async {
     // Cart is cleared by backend when order is created
     // This method is kept for local cache clearing if needed
@@ -85,6 +93,7 @@ class CartRemoteDatasource {
   }
 
   /// Checkout
+  @override  
   Future<Map<String, dynamic>> checkout({
     required List<Map<String, dynamic>> items,
     required double totalAmount,
