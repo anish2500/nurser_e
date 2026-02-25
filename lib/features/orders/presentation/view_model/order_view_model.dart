@@ -46,4 +46,15 @@ class OrderViewModel extends Notifier<OrderState> {
       );
     }
   }
+
+  Future<bool> cancelOrder(String orderId) async {
+    try {
+      await _repository.cancelOrder(orderId);
+      final updatedOrders = state.orders.where((o) => o.id != orderId).toList();
+      state = state.copyWith(orders: updatedOrders);
+      return true;
+    } catch (e) {
+      return false;
+    }
+  }
 }
