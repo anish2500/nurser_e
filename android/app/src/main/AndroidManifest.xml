@@ -42,6 +42,11 @@
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+
+        <activity
+            android:name="com.esewa.sdk.EsewaPaymentActivity"
+            android:exported="true"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>     
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
@@ -55,6 +60,7 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+
         </intent>
     </queries>
 </manifest>

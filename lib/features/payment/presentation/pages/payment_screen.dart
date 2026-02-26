@@ -5,6 +5,7 @@ import 'package:nurser_e/features/cart/presentation/view_model/cart_view_model.d
 import 'package:nurser_e/features/payment/presentation/state/payment_state.dart';
 import 'package:nurser_e/features/payment/presentation/view_model/payment_view_model.dart';
 import 'package:nurser_e/features/payment/presentation/widgets/order_summary_widget.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PaymentScreen extends ConsumerStatefulWidget {
   const PaymentScreen({super.key});
@@ -275,18 +276,35 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     );
   }
 
-  Future<void> _processPayment(double totalAmount) async {
-    setState(() {
-      isProcessing = true;
-    });
+  Future<void> _openEsewaApp() async {
+    final Uri esewaUri = Uri.parse('esewa://');
 
+    try {
+      if (await canLaunchUrl(esewaUri)) {
+        await launchUrl(esewaUri, mode: LaunchMode.externalApplication);
+      } else {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Please install eSewa app or use web version')),
+          );
+        }
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error opening eSewa: $e')),
+        );
+      }
+    }
+  }
+
+  Future<void> _processOrderSuccess(double totalAmount) async {
     try {
       final success = await ref.read(paymentViewModelProvider.notifier).processPayment(
             paymentMethod: selectedPaymentMethod,
           );
 
       if (success && mounted) {
-        // Clear local cart (backend already cleared it when order was created)
         try {
           await ref.read(cartViewModelProvider.notifier).clearCart();
         } catch (e) {
@@ -322,12 +340,78 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
           ),
         );
       }
-    } finally {
+    } catch (e) {
       if (mounted) {
-        setState(() {
-          isProcessing = false;
-        });
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error processing order: $e')),
+        );
       }
+    }
+  }
+
+  Future<void> _processPayment(double totalAmount) async {
+    if (selectedPaymentMethod == 'online') {
+      // Try to open eSewa first
+      final Uri esewaUri = Uri.parse('esewa://');
+      bool esewaOpened = false;
+      
+      try {
+        if (await canLaunchUrl(esewaUri)) {
+          esewaOpened = await launchUrl(esewaUri, mode: LaunchMode.externalApplication);
+        }
+      } catch (e) {
+        // Ignore errors, try fallback
+      }
+      
+      // If eSewa app didn't open, try web version as fallback
+      if (!esewaOpened) {
+        final Uri esewaWeb = Uri.parse('https://esewa.com.np');
+        try {
+          await launchUrl(esewaWeb, mode: LaunchMode.externalApplication);
+        } catch (e) {
+          if (mounted) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Could not open eSewa. Please install eSewa app.')),
+            );
+            return;
+          }
+        }
+      }
+      
+      // Only show confirmation dialog after user returns
+      if (mounted) {
+        showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+            title: const Text('eSewa Payment'),
+            content: const Text('Please complete payment in eSewa app and return here.'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  _processOrderSuccess(totalAmount);
+                },
+                child: const Text('I Completed Payment'),
+              ),
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+            ],
+          ),
+        );
+      }
+      return;
+    }
+    // Cash on delivery logic...
+    setState(() {
+      isProcessing = true;
+    });
+    await _processOrderSuccess(totalAmount);
+    if (mounted) {
+      setState(() {
+        isProcessing = false;
+      });
     }
   }
 }

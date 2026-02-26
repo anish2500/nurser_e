@@ -6,7 +6,7 @@ part of 'order_api_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-OrderApiModel _$OrderApiModelFromJson(Map<String, dynamic> json) =>
+OrderApiModel $OrderApiModelFromJson(Map<String, dynamic> json) =>
     OrderApiModel(
       id: json['_id'] as String?,
       userId: json['userId'] as String?,
@@ -36,7 +36,7 @@ Map<String, dynamic> _$OrderApiModelToJson(OrderApiModel instance) =>
       'createdAt': instance.createdAt?.toIso8601String(),
     };
 
-OrderItem _$OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
+OrderItem $OrderItemFromJson(Map<String, dynamic> json) => OrderItem(
       id: json['_id'] as String?,
       plantId: json['plantId'] == null
           ? null

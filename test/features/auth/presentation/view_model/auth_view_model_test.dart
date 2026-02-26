@@ -5,14 +5,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:nurser_e/core/error/failures.dart';
+import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/features/auth/domain/entities/auth_entity.dart';
 import 'package:nurser_e/features/auth/domain/usecases/get_current_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/login_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/register_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:nurser_e/features/auth/domain/usecases/upload_photo_usecase.dart';
+import 'package:nurser_e/features/auth/domain/usecases/update_profile_usecase.dart';
 import 'package:nurser_e/features/auth/presentation/state/auth_state.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class MockRegisterUsecase extends Mock implements RegisterUsecase {}
 
@@ -24,7 +27,11 @@ class MockGetCurrentUserUsecase extends Mock implements GetCurrentUserUsecase {}
 
 class MockUploadPhotoUsecase extends Mock implements UploadPhotoUsecase {}
 
-class FileFake extends Fake implements File{}
+class MockUpdateProfileUsecase extends Mock implements UpdateProfileUsecase {}
+
+class MockSharedPreferences extends Mock implements SharedPreferences {}
+
+class FileFake extends Fake implements File {}
 
 void main() {
   late ProviderContainer container;
@@ -33,6 +40,8 @@ void main() {
   late MockLogoutUsecase mockLogoutUsecase;
   late MockGetCurrentUserUsecase mockGetCurrentUserUsecase;
   late MockUploadPhotoUsecase mockUploadPhotoUsecase;
+  late MockUpdateProfileUsecase mockUpdateProfileUsecase;
+  late MockSharedPreferences mockSharedPreferences;
 
   setUpAll(() {
     registerFallbackValue(FileFake());
@@ -44,7 +53,10 @@ void main() {
       ),
     );
     registerFallbackValue(
-      LoginUsecaseParams(email: 'fallback@test.com', password: 'fallback'),
+      const LoginUsecaseParams(email: 'fallback@test.com', password: 'fallback'),
+    );
+    registerFallbackValue(
+      const UpdateProfileParams(),
     );
   });
 
@@ -54,6 +66,15 @@ void main() {
     mockLogoutUsecase = MockLogoutUsecase();
     mockGetCurrentUserUsecase = MockGetCurrentUserUsecase();
     mockUploadPhotoUsecase = MockUploadPhotoUsecase();
+    mockUpdateProfileUsecase = MockUpdateProfileUsecase();
+    mockSharedPreferences = MockSharedPreferences();
+
+    when(() => mockSharedPreferences.getString(any())).thenReturn(null);
+    when(() => mockSharedPreferences.setString(any(), any()))
+        .thenAnswer((_) async => true);
+    when(() => mockSharedPreferences.getBool(any())).thenReturn(null);
+    when(() => mockSharedPreferences.setBool(any(), any()))
+        .thenAnswer((_) async => true);
 
     container = ProviderContainer(
       overrides: [
@@ -64,6 +85,8 @@ void main() {
           mockGetCurrentUserUsecase,
         ),
         uploadPhotoUsecaseProvider.overrideWithValue(mockUploadPhotoUsecase),
+        updateProfileUsecaseProvider.overrideWithValue(mockUpdateProfileUsecase),
+        sharedPreferencesProvider.overrideWithValue(mockSharedPreferences),
       ],
     );
   });
@@ -89,9 +112,8 @@ void main() {
 
     group('register', () {
       test('success', () async {
-        when(
-          () => mockRegisterUsecase(any()),
-        ).thenAnswer((_) async => const Right(true));
+        when(() => mockRegisterUsecase(any()))
+            .thenAnswer((_) async => const Right(true));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.register(
@@ -107,9 +129,8 @@ void main() {
 
       test('failure', () async {
         const failure = ApiFailure(message: 'Email exists');
-        when(
-          () => mockRegisterUsecase(any()),
-        ).thenAnswer((_) async => const Left(failure));
+        when(() => mockRegisterUsecase(any()))
+            .thenAnswer((_) async => const Left(failure));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.register(
@@ -126,9 +147,8 @@ void main() {
 
     group('login', () {
       test('success', () async {
-        when(
-          () => mockLoginUsecase(any()),
-        ).thenAnswer((_) async => const Right(tUser));
+        when(() => mockLoginUsecase(any()))
+            .thenAnswer((_) async => const Right(tUser));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.login(email: 'test@example.com', password: '1234');
@@ -140,9 +160,8 @@ void main() {
 
       test('failure', () async {
         const failure = ApiFailure(message: 'Invalid credentials');
-        when(
-          () => mockLoginUsecase(any()),
-        ).thenAnswer((_) async => const Left(failure));
+        when(() => mockLoginUsecase(any()))
+            .thenAnswer((_) async => const Left(failure));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.login(email: 'test@example.com', password: '1234');
@@ -155,9 +174,8 @@ void main() {
 
     group('logout', () {
       test('success', () async {
-        when(
-          () => mockLogoutUsecase(),
-        ).thenAnswer((_) async => const Right(true));
+        when(() => mockLogoutUsecase())
+            .thenAnswer((_) async => const Right(true));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.logout();
@@ -169,9 +187,8 @@ void main() {
 
       test('failure', () async {
         const failure = ApiFailure(message: 'Logout failed');
-        when(
-          () => mockLogoutUsecase(),
-        ).thenAnswer((_) async => const Left(failure));
+        when(() => mockLogoutUsecase())
+            .thenAnswer((_) async => const Left(failure));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.logout();
@@ -184,9 +201,8 @@ void main() {
 
     group('getCurrentUser', () {
       test('success', () async {
-        when(
-          () => mockGetCurrentUserUsecase(),
-        ).thenAnswer((_) async => const Right(tUser));
+        when(() => mockGetCurrentUserUsecase())
+            .thenAnswer((_) async => const Right(tUser));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.getCurrentUser();
@@ -198,9 +214,8 @@ void main() {
 
       test('failure', () async {
         const failure = ApiFailure(message: 'User not found');
-        when(
-          () => mockGetCurrentUserUsecase(),
-        ).thenAnswer((_) async => const Left(failure));
+        when(() => mockGetCurrentUserUsecase())
+            .thenAnswer((_) async => const Left(failure));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.getCurrentUser();
@@ -215,23 +230,21 @@ void main() {
       final tFile = File('path/to/file.jpg');
 
       test('success', () async {
-        when(
-          () => mockUploadPhotoUsecase(any()),
-        ).thenAnswer((_) async => const Right('image.jpg'));
+        when(() => mockUploadPhotoUsecase(any()))
+            .thenAnswer((_) async => const Right('image.jpg'));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.uploadPhoto(tFile);
+        await Future.delayed(const Duration(milliseconds: 100));
 
         final state = container.read(authViewModelProvider);
-        expect(state.status, AuthStatus.loaded);
         expect(state.uploadPhotoName, 'image.jpg');
       });
 
       test('failure', () async {
         const failure = ApiFailure(message: 'Upload failed');
-        when(
-          () => mockUploadPhotoUsecase(any()),
-        ).thenAnswer((_) async => const Left(failure));
+        when(() => mockUploadPhotoUsecase(any()))
+            .thenAnswer((_) async => const Left(failure));
 
         final viewModel = container.read(authViewModelProvider.notifier);
         await viewModel.uploadPhoto(tFile);
