@@ -191,24 +191,9 @@ void main() {
       expect(result.isLeft(), true);
     });
 
-    test('returns AuthEntity when offline and local login succeeds', () async {
+    test('returns ApiFailure when offline', () async {
       when(() => mockNetworkInfo.isConnected)
           .thenAnswer((_) async => false);
-      when(() => mockLocalDatasource.login(tEmail, tPassword))
-          .thenAnswer((_) async => tAuthHiveModel);
-
-      final result = await repository.login(tEmail, tPassword);
-
-      expect(result.isRight(), true);
-      verifyNever(() => mockRemoteDatasource.login(any(), any()));
-    });
-
-    test('returns LocalDatabaseFailure when offline and credentials invalid',
-        () async {
-      when(() => mockNetworkInfo.isConnected)
-          .thenAnswer((_) async => false);
-      when(() => mockLocalDatasource.login(tEmail, tPassword))
-          .thenAnswer((_) async => null);
 
       final result = await repository.login(tEmail, tPassword);
 
