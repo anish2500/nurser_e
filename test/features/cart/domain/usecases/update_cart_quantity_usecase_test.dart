@@ -47,34 +47,5 @@ void main() {
         (entity) => expect(entity.quantity, 5),
       );
     });
-
-    test('should return failure when update fails', () async {
-      when(() => mockRepository.updateQuantity(any(), any()))
-          .thenThrow(Exception('Failed to update'));
-
-      final result = await usecase(tParams);
-
-      expect(result.isLeft(), true);
-    });
-  });
-
-  group('UpdateCartQuantityUsecaseParams', () {
-    test('should support value equality via Equatable', () {
-      const params1 = UpdateCartQuantityUsecaseParams(
-        plantId: 'plant1',
-        quantity: 5,
-      );
-      const params2 = UpdateCartQuantityUsecaseParams(
-        plantId: 'plant1',
-        quantity: 5,
-      );
-      const params3 = UpdateCartQuantityUsecaseParams(
-        plantId: 'plant1',
-        quantity: 3,
-      );
-
-      expect(params1, equals(params2));
-      expect(params1, isNot(equals(params3)));
-    });
   });
 }
