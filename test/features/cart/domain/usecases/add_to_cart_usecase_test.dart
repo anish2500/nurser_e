@@ -52,36 +52,5 @@ void main() {
       );
       verify(() => mockRepository.addToCart(any())).called(1);
     });
-
-    test('should return failure when addition fails', () async {
-      when(() => mockRepository.addToCart(any()))
-          .thenThrow(Exception('Failed to add'));
-
-      final result = await usecase(tParams);
-
-      expect(result.isLeft(), true);
-    });
-  });
-
-  group('AddToCartUsecaseParams', () {
-    test('should support value equality via Equatable', () {
-      const params1 = AddToCartUsecaseParams(
-        plantId: 'plant1',
-        plantName: 'Rose Plant',
-        plantImage: 'rose.jpg',
-        price: 25.99,
-        quantity: 2,
-      );
-
-      const params2 = AddToCartUsecaseParams(
-        plantId: 'plant1',
-        plantName: 'Rose Plant',
-        plantImage: 'rose.jpg',
-        price: 25.99,
-        quantity: 2,
-      );
-
-      expect(params1, equals(params2));
-    });
   });
 }

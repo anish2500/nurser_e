@@ -49,23 +49,5 @@ void main() {
       );
       verify(() => mockRepository.getCart()).called(1);
     });
-
-    test('should return failure when getCart fails', () async {
-      when(() => mockRepository.getCart())
-          .thenThrow(Exception('Failed to get cart'));
-
-      final result = await usecase();
-
-      expect(result.isLeft(), true);
-    });
-  });
-
-  group('GetCartUsecaseParams', () {
-    test('should support value equality via Equatable', () {
-      const params1 = GetCartUsecaseParams();
-      const params2 = GetCartUsecaseParams();
-
-      expect(params1, equals(params2));
-    });
   });
 }

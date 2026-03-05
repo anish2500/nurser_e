@@ -63,6 +63,8 @@ dependencies:
   proximity_sensor: ^1.0.0
   local_auth: ^3.0.0
   url_launcher: ^6.3.2
+  integration_test:
+    sdk: flutter
 
  
  

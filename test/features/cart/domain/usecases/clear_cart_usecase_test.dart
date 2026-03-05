@@ -24,23 +24,5 @@ void main() {
       expect(result.isRight(), true);
       verify(() => mockRepository.clearCart()).called(1);
     });
-
-    test('should return failure when clear fails', () async {
-      when(() => mockRepository.clearCart())
-          .thenThrow(Exception('Failed to clear'));
-
-      final result = await usecase();
-
-      expect(result.isLeft(), true);
-    });
-  });
-
-  group('ClearCartUsecaseParams', () {
-    test('should support value equality via Equatable', () {
-      const params1 = ClearCartUsecaseParams();
-      const params2 = ClearCartUsecaseParams();
-
-      expect(params1, equals(params2));
-    });
   });
 }

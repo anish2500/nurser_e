@@ -276,28 +276,6 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     );
   }
 
-  Future<void> _openEsewaApp() async {
-    final Uri esewaUri = Uri.parse('esewa://');
-
-    try {
-      if (await canLaunchUrl(esewaUri)) {
-        await launchUrl(esewaUri, mode: LaunchMode.externalApplication);
-      } else {
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Please install eSewa app or use web version')),
-          );
-        }
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error opening eSewa: $e')),
-        );
-      }
-    }
-  }
-
   Future<void> _processOrderSuccess(double totalAmount) async {
     try {
       final success = await ref.read(paymentViewModelProvider.notifier).processPayment(
@@ -357,7 +335,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       
       try {
         if (await canLaunchUrl(esewaUri)) {
-          esewaOpened = await launchUrl(esewaUri, mode: LaunchMode.externalApplication);
+          esewaOpened = await launchUrl(esewaUri, mode: LaunchMode.inAppWebView);
         }
       } catch (e) {
         // Ignore errors, try fallback
@@ -367,7 +345,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
       if (!esewaOpened) {
         final Uri esewaWeb = Uri.parse('https://esewa.com.np');
         try {
-          await launchUrl(esewaWeb, mode: LaunchMode.externalApplication);
+          await launchUrl(esewaWeb, mode: LaunchMode.inAppWebView);
         } catch (e) {
           if (mounted) {
             ScaffoldMessenger.of(context).showSnackBar(
