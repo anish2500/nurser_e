@@ -6,7 +6,6 @@ import 'package:nurser_e/core/services/shake_service.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
 import 'package:nurser_e/features/auth/presentation/pages/login_screens.dart';
 
-
 class App extends StatefulWidget {
   const App({super.key});
 
@@ -15,11 +14,15 @@ class App extends StatefulWidget {
     if (state != null) {
       state.setState(() {
         _AppState._themeMode = themeMode;
+        themeModeNotifier.value = themeMode; 
       });
     }
   }
 
   static ThemeMode get currentThemeMode => _AppState._themeMode;
+  static ValueNotifier<ThemeMode> themeModeNotifier = ValueNotifier(
+    ThemeMode.system,
+  );
 
   @override
   State<App> createState() => _AppState();
@@ -42,8 +45,6 @@ class _AppState extends State<App> with WidgetsBindingObserver {
       _startShakeListener();
     });
   }
-
-  
 
   void _startShakeListener() {
     _shakeService.startListening(() {
@@ -85,6 +86,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onDoubleTap: () {
         final currentMode = App.currentThemeMode;
         final newMode = currentMode == ThemeMode.light
@@ -98,11 +100,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
         theme: getApplicationTheme(),
         darkTheme: getApplicationDarkTheme(),
         themeMode: _themeMode,
-        home: Stack(
-          children: [
-            const SplashScreens(),
-          ],
-        ),
+        home: Stack(children: [const SplashScreens()]),
       ),
     );
   }
