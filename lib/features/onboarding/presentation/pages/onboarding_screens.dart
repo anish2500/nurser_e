@@ -43,9 +43,12 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = App.currentThemeMode == ThemeMode.dark;
-    
-    return Scaffold(
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: App.themeModeNotifier,
+      builder: (context, themeMode, child) {
+        final isDarkMode = themeMode == ThemeMode.dark;
+        
+        return Scaffold(
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
       body: SafeArea(
         child: LayoutBuilder(
@@ -236,6 +239,8 @@ class _OnboardingScreensState extends State<OnboardingScreens> {
         ),
       ),
     );
+      },
+    );
   }
 }
 
@@ -246,79 +251,84 @@ class OnboardingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Padding(
-          padding: EdgeInsets.symmetric(
-            horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Container(
-                width:
-                    constraints.maxWidth *
-                    (MediaQuery.of(context).size.width >= 768 ? 0.6 : 0.7),
-                height:
-                    constraints.maxHeight *
-                    (MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.5),
-                decoration: BoxDecoration(
-                  color: App.currentThemeMode == ThemeMode.dark ? Colors.grey[800] : Colors.grey[100],
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: data.imagePath != null
-                      ? Image.asset(
-                          data.imagePath!,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return _buildPlaceholderIcon(context);
-                          },
-                        )
-                      : _buildPlaceholderIcon(context),
-                ),
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: App.themeModeNotifier,
+      builder: (context, themeMode, child) {
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            return Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width >= 768 ? 40 : 20,
               ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width >= 768 ? 40 : 40,
-              ),
-
-              Text(
-                data.title,
-                style: TextStyle(
-                  fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
-                  fontWeight: FontWeight.w700,
-                  color: App.currentThemeMode == ThemeMode.dark ? Colors.white : Colors.black,
-                  fontFamily: 'Poppins',
-                ),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: MediaQuery.of(context).size.width >= 768 ? 16 : 16,
-              ),
-
-              Padding(
-                padding: EdgeInsets.symmetric(
-                  horizontal: MediaQuery.of(context).size.width >= 768
-                      ? 40
-                      : 20,
-                ),
-                child: Text(
-                  data.subtitle,
-                  style: TextStyle(
-                    fontSize: MediaQuery.of(context).size.width >= 768
-                        ? 18
-                        : 16,
-                    fontWeight: FontWeight.w400,
-                    color: App.currentThemeMode == ThemeMode.dark ? Colors.white70 : Colors.grey[600],
-                    fontFamily: 'Poppins',
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    width:
+                        constraints.maxWidth *
+                        (MediaQuery.of(context).size.width >= 768 ? 0.6 : 0.7),
+                    height:
+                        constraints.maxHeight *
+                        (MediaQuery.of(context).size.width >= 768 ? 0.4 : 0.5),
+                    decoration: BoxDecoration(
+                      color: themeMode == ThemeMode.dark ? Colors.grey[800] : Colors.grey[100],
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(20),
+                      child: data.imagePath != null
+                          ? Image.asset(
+                              data.imagePath!,
+                              fit: BoxFit.cover,
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildPlaceholderIcon(context);
+                              },
+                            )
+                          : _buildPlaceholderIcon(context),
+                    ),
                   ),
-                  textAlign: TextAlign.center,
-                  maxLines: 3,
-                ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width >= 768 ? 40 : 40,
+                  ),
+
+                  Text(
+                    data.title,
+                    style: TextStyle(
+                      fontSize: MediaQuery.of(context).size.width >= 768 ? 36 : 28,
+                      fontWeight: FontWeight.w700,
+                      color: themeMode == ThemeMode.dark ? Colors.white : Colors.black,
+                      fontFamily: 'Poppins',
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.width >= 768 ? 16 : 16,
+                  ),
+
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: MediaQuery.of(context).size.width >= 768
+                          ? 40
+                          : 20,
+                    ),
+                    child: Text(
+                      data.subtitle,
+                      style: TextStyle(
+                        fontSize: MediaQuery.of(context).size.width >= 768
+                            ? 18
+                            : 16,
+                        fontWeight: FontWeight.w400,
+                        color: themeMode == ThemeMode.dark ? Colors.white70 : Colors.grey[600],
+                        fontFamily: 'Poppins',
+                      ),
+                      textAlign: TextAlign.center,
+                      maxLines: 3,
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         );
       },
     );

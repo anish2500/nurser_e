@@ -47,7 +47,10 @@ class _SplashScreensState extends ConsumerState<SplashScreens> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ValueListenableBuilder<ThemeMode>(
+      valueListenable: App.themeModeNotifier,
+      builder: (context, themeMode, child) {
+        return Scaffold(
       backgroundColor: App.currentThemeMode == ThemeMode.dark
           ? Colors.black
           : Colors.white,
@@ -112,6 +115,8 @@ class _SplashScreensState extends ConsumerState<SplashScreens> {
           ),
         ),
       ),
+    );
+      },
     );
   }
 }

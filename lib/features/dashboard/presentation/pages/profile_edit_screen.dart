@@ -6,6 +6,7 @@ import 'package:nurser_e/app/theme/theme_colors_extension.dart';
 import 'package:nurser_e/core/services/storage/user_session_service.dart';
 import 'package:nurser_e/core/utils/my_snackbar.dart';
 import 'package:nurser_e/features/auth/presentation/view_model/auth_view_model.dart';
+import 'package:nurser_e/core/api/api_endpoints.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class ProfileEditScreen extends ConsumerStatefulWidget {
@@ -138,7 +139,7 @@ class _ProfileEditScreenState extends ConsumerState<ProfileEditScreen> {
       return imageUrl;
     }
     
-    return 'http://192.168.18.4:5050/$imageUrl';
+    return '${ApiEndpoints.imageBaseUrl}/$imageUrl';
   }
 
   @override
